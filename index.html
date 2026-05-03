@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Quiz Arena — Buzzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--neon:#00E5FF;--bg:#05070D;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#e0f2fe;min-height:100vh;overflow-x:hidden;}
+.archivo{font-family:'Archivo Black',sans-serif;}
+.spaceg{font-family:'Space Grotesk',sans-serif;}
+
+/* ── screens ── */
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* ── landing ── */
+#s-landing{align-items:center;justify-content:center;text-align:center;padding:2rem;position:relative;overflow:hidden;}
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+
+/* ── role picker ── */
+#s-role{align-items:center;justify-content:center;padding:2rem;gap:2rem;}
+
+/* ── team setup ── */
+#s-team-setup{align-items:center;justify-content:center;padding:2rem;}
+
+/* ── team buzzer ── */
+#s-buzzer{align-items:center;justify-content:center;flex-direction:column;padding:2rem;gap:1.5rem;}
+
+/* ── admin password ── */
+#s-admin-pw{align-items:center;justify-content:center;flex-direction:column;padding:2rem;gap:1rem;}
+
+/* ── admin panel ── */
+#s-admin{flex-direction:column;padding:2rem;gap:1rem;}
+
+/* ── shared UI ── */
+.card{background:rgba(10,15,28,0.95);border:1px solid rgba(0,229,255,0.2);border-radius:1.25rem;padding:1.5rem 2rem;}
+.neon-btn{border:2px solid var(--neon);color:var(--neon);background:transparent;cursor:pointer;border-radius:1.25rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;padding:.75rem 2rem;transition:all .2s;}
+.neon-btn:hover{background:var(--neon);color:#000;}
+.neon-btn:disabled{opacity:.35;cursor:default;background:transparent!important;color:var(--neon)!important;}
+.ghost-btn{background:transparent;border:none;color:#64748b;cursor:pointer;font-size:.9rem;font-family:'Inter',sans-serif;}
+.ghost-btn:hover{color:#94a3b8;}
+input[type=text],input[type=password]{background:rgba(15,25,45,0.9);border:1.5px solid #2d4060;border-radius:.75rem;color:#e0f2fe;font-size:1rem;padding:.7rem 1rem;width:100%;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
+
+/* ── BUZZER BUTTON ── */
+.buzzer-wrap{display:flex;align-items:center;justify-content:center;}
+.buzzer{width:220px;height:220px;border-radius:50%;border:6px solid var(--neon);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Archivo Black',sans-serif;font-size:1.6rem;color:#fff;background:rgba(0,229,255,0.08);transition:all .15s;position:relative;user-select:none;}
+.buzzer:hover:not(.locked){background:rgba(0,229,255,0.18);transform:scale(1.04);}
+.buzzer:active:not(.locked){transform:scale(.96);}
+.buzzer.buzzed{background:rgba(0,229,255,0.25);border-color:#fff;box-shadow:0 0 60px rgba(0,229,255,0.5);}
+.buzzer.locked{border-color:#334155;color:#475569;cursor:default;background:transparent;}
+.buzzer.locked:hover{transform:none;}
+.buzz-rank{position:absolute;top:-10px;right:-10px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;font-family:'Space Grotesk',sans-serif;}
+.rank-1{background:#facc15;color:#000;}
+.rank-2{background:#94a3b8;color:#000;}
+.rank-3{background:#c2800a;color:#fff;}
+.rank-4{background:#475569;color:#fff;}
+
+/* ── admin leaderboard ── */
+.lb-row{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-radius:1rem;border:1px solid rgba(0,229,255,0.12);margin-bottom:.6rem;background:rgba(10,20,40,0.8);transition:all .4s;}
+.lb-row.first{border-color:#facc15;background:rgba(250,204,21,0.08);}
+.lb-row.second{border-color:#94a3b8;background:rgba(148,163,184,0.08);}
+.lb-row.third{border-color:#c2800a;background:rgba(194,128,10,0.08);}
+.lb-row.waiting{opacity:.4;}
+.lb-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;font-family:'Space Grotesk',sans-serif;flex-shrink:0;}
+.team-color-0{color:#00E5FF;border-color:#00E5FF;}
+.team-color-1{color:#a78bfa;border-color:#a78bfa;}
+.team-color-2{color:#fb923c;border-color:#fb923c;}
+.team-color-3{color:#4ade80;border-color:#4ade80;}
+.team-bg-0{background:rgba(0,229,255,0.15);}
+.team-bg-1{background:rgba(167,139,250,0.15);}
+.team-bg-2{background:rgba(251,146,60,0.15);}
+.team-bg-3{background:rgba(74,222,128,0.15);}
+
+/* ── admin question display ── */
+.q-display{background:rgba(5,10,22,0.95);border:1px solid rgba(0,229,255,0.2);border-radius:1.25rem;padding:1.5rem 2rem;}
+.timer-ring-wrap{position:relative;width:70px;height:70px;flex-shrink:0;}
+
+/* ── round badge ── */
+.round-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem 1rem;border:1px solid rgba(0,229,255,0.3);border-radius:99px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#67e8f9;}
+
+/* ── diff badge ── */
+.diff{font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.18rem .5rem;border-radius:99px;display:inline-block;}
+.diff-normal{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);}
+.diff-hard{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.3);}
+
+/* ── status bar ── */
+.status-bar{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:rgba(10,15,28,0.9);border-bottom:1px solid rgba(0,229,255,0.1);}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes floatUp{0%{transform:translateY(0);opacity:.18}100%{transform:translateY(-110vh);opacity:0}}
+@keyframes popIn{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.pop{animation:popIn .35s ease forwards;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 1 — LANDING
+════════════════════════════════════════════ -->
+<section class="screen active" id="s-landing">
+  <div class="particles" id="particles"></div>
+  <div style="z-index:10;display:flex;flex-direction:column;align-items:center;gap:1.75rem;">
+    <div style="display:inline-flex;align-items:center;gap:.75rem;padding:.6rem 1.5rem;border:1px solid rgba(0,229,255,0.3);border-radius:99px;">
+      <div style="width:9px;height:9px;background:var(--neon);border-radius:50%;animation:pulse 1.5s infinite;"></div>
+      <span style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#67e8f9;font-weight:600;">Ayushman Bharat Diwas Hackathon 2026</span>
+    </div>
+    <h1 class="archivo" style="font-size:clamp(3.5rem,10vw,6.5rem);color:#fff;line-height:.95;">CYBER QUIZ</h1>
+    <p class="spaceg" style="font-size:clamp(1.6rem,4vw,3rem);color:var(--neon);letter-spacing:.14em;font-weight:700;">ARENA</p>
+    <p style="color:#94a3b8;font-size:1.05rem;max-width:420px;line-height:1.6;text-align:center;">56 questions · 5 rounds · Live buzzer system</p>
+    <button class="neon-btn" style="font-size:1.2rem;padding:1rem 3.5rem;margin-top:.5rem;" onclick="goTo('s-role')">ENTER ARENA</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 2 — ROLE PICKER
+════════════════════════════════════════════ -->
+<section class="screen" id="s-role">
+  <div style="max-width:600px;margin:auto;width:100%;display:flex;flex-direction:column;gap:1.5rem;padding:2rem;">
+    <div style="text-align:center;margin-bottom:.5rem;">
+      <h2 class="archivo" style="font-size:2rem;color:#fff;">Who are you?</h2>
+      <p style="color:#64748b;margin-top:.4rem;">Select your role to continue</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="card" style="cursor:pointer;text-align:center;border-color:rgba(0,229,255,0.3);transition:all .2s;" onclick="goTo('s-team-setup')" onmouseover="this.style.borderColor='var(--neon)'" onmouseout="this.style.borderColor='rgba(0,229,255,0.3)'">
+        <div style="font-size:2.5rem;margin-bottom:.75rem;">🏁</div>
+        <h3 class="spaceg" style="font-size:1.2rem;color:#fff;font-weight:700;">Team</h3>
+        <p style="color:#64748b;font-size:.85rem;margin-top:.4rem;line-height:1.5;">Enter your team name and access the buzzer screen</p>
+      </div>
+      <div class="card" style="cursor:pointer;text-align:center;border-color:rgba(250,204,21,0.3);transition:all .2s;" onclick="goTo('s-admin-pw')" onmouseover="this.style.borderColor='#facc15'" onmouseout="this.style.borderColor='rgba(250,204,21,0.3)'">
+        <div style="font-size:2.5rem;margin-bottom:.75rem;">🛡️</div>
+        <h3 class="spaceg" style="font-size:1.2rem;color:#fff;font-weight:700;">Admin</h3>
+        <p style="color:#64748b;font-size:.85rem;margin-top:.4rem;line-height:1.5;">Access the quizmaster control panel and live leaderboard</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:.5rem;">
+      <button class="ghost-btn" onclick="goTo('s-landing')">← Back to landing</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 3 — TEAM SETUP
+════════════════════════════════════════════ -->
+<section class="screen" id="s-team-setup">
+  <div style="max-width:440px;margin:auto;width:100%;display:flex;flex-direction:column;gap:1.25rem;padding:2rem;">
+    <div style="text-align:center;margin-bottom:.5rem;">
+      <h2 class="archivo" style="font-size:1.9rem;color:#fff;">Team Setup</h2>
+      <p style="color:#64748b;margin-top:.4rem;">Enter your team name to join</p>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:1rem;">
+      <div>
+        <label style="font-size:.82rem;color:#94a3b8;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem;display:block;">Team Name</label>
+        <input type="text" id="team-name-input" placeholder="e.g. Team Alpha" maxlength="20"/>
+      </div>
+      <div>
+        <label style="font-size:.82rem;color:#94a3b8;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem;display:block;">Team Colour</label>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;">
+          <button onclick="pickColor(0,this)" style="height:40px;border-radius:.6rem;background:rgba(0,229,255,0.2);border:2px solid #00E5FF;cursor:pointer;" title="Cyan"></button>
+          <button onclick="pickColor(1,this)" style="height:40px;border-radius:.6rem;background:rgba(167,139,250,0.2);border:2px solid transparent;cursor:pointer;" title="Purple"></button>
+          <button onclick="pickColor(2,this)" style="height:40px;border-radius:.6rem;background:rgba(251,146,60,0.2);border:2px solid transparent;cursor:pointer;" title="Orange"></button>
+          <button onclick="pickColor(3,this)" style="height:40px;border-radius:.6rem;background:rgba(74,222,128,0.2);border:2px solid transparent;cursor:pointer;" title="Green"></button>
+        </div>
+      </div>
+    </div>
+    <button class="neon-btn" style="width:100%;font-size:1.05rem;padding:.9rem;" onclick="joinAsBuzzer()">JOIN & GO TO BUZZER →</button>
+    <button class="ghost-btn" style="text-align:center;" onclick="goTo('s-role')">← Back</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 4 — TEAM BUZZER
+════════════════════════════════════════════ -->
+<section class="screen" id="s-buzzer">
+
+  <div class="status-bar" style="width:100%;">
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <span id="bz-team-name" class="archivo" style="font-size:1.3rem;color:#fff;"></span>
+      <span id="bz-team-badge" style="font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:99px;"></span>
+    </div>
+    <div id="bz-round-info" style="color:#64748b;font-size:.82rem;font-family:monospace;"></div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;padding:2rem;text-align:center;">
+
+    <div id="bz-q-number" class="round-pill"><span id="bz-q-label">Waiting for quizmaster...</span></div>
+
+    <h2 id="bz-question" class="archivo" style="font-size:clamp(1.5rem,4vw,2.2rem);color:#fff;max-width:760px;line-height:1.45;min-height:80px;"></h2>
+
+    <div class="buzzer-wrap">
+      <div id="buzzer-btn" class="buzzer" onclick="pressBuzzer()">
+        <span id="buzzer-label">BUZZ!</span>
+        <div id="buzz-rank-badge" class="buzz-rank" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div id="bz-status-msg" style="color:#64748b;font-size:1rem;min-height:1.5rem;"></div>
+
+    <div style="display:flex;align-items:center;gap:.5rem;opacity:.5;margin-top:-.5rem;">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--neon);animation:pulse 2s infinite;"></div>
+      <span style="font-size:.78rem;color:#64748b;">Live — synced with quizmaster</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 5 — ADMIN PASSWORD
+════════════════════════════════════════════ -->
+<section class="screen" id="s-admin-pw">
+  <div style="max-width:380px;margin:auto;width:100%;display:flex;flex-direction:column;gap:1rem;padding:2rem;">
+    <div style="text-align:center;margin-bottom:.5rem;">
+      <div style="font-size:2rem;margin-bottom:.5rem;">🔐</div>
+      <h2 class="archivo" style="font-size:1.8rem;color:#fff;">Admin Access</h2>
+      <p style="color:#64748b;margin-top:.4rem;font-size:.9rem;">Quizmaster only</p>
+    </div>
+    <input type="password" id="admin-pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+    <p id="pw-error" style="color:#f87171;font-size:.85rem;text-align:center;min-height:1.2rem;"></p>
+    <button class="neon-btn" style="width:100%;" onclick="checkAdminPw()">UNLOCK →</button>
+    <p style="color:#334155;font-size:.75rem;text-align:center;margin-top:.25rem;">Default password: <code style="color:#4ade80;">quiz2026</code></p>
+    <button class="ghost-btn" style="text-align:center;" onclick="goTo('s-role')">← Back</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+  SCREEN 6 — ADMIN PANEL
+════════════════════════════════════════════ -->
+<section class="screen" id="s-admin">
+
+  <div class="status-bar">
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <div style="width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite;"></div>
+      <span class="spaceg" style="font-weight:700;color:#fff;">Quizmaster Panel</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span id="adm-progress" style="font-family:monospace;color:#64748b;font-size:.85rem;"></span>
+      <button class="neon-btn" style="padding:.5rem 1.4rem;font-size:.88rem;" onclick="adminNext()" id="adm-next-btn">NEXT QUESTION →</button>
+      <button onclick="resetBuzzers()" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.4);color:#f87171;border-radius:.75rem;padding:.5rem 1rem;cursor:pointer;font-size:.82rem;font-family:'Space Grotesk',sans-serif;font-weight:600;">RESET BUZZERS</button>
+    </div>
+  </div>
+
+  <div style="flex:1;display:grid;grid-template-columns:1fr 380px;gap:1.25rem;padding:1.25rem;max-width:1200px;width:100%;margin:0 auto;align-items:start;">
+
+    <!-- Left: question -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="q-display">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="display:flex;align-items:center;gap:.6rem;">
+            <span id="adm-round-pill" class="round-pill"></span>
+            <span id="adm-diff" class="diff"></span>
+          </div>
+          <div class="timer-ring-wrap">
+            <svg viewBox="0 0 100 100" style="width:100%;height:100%;">
+              <circle cx="50" cy="50" r="44" fill="none" stroke="#1e293b" stroke-width="9"/>
+              <circle id="adm-timer-ring" cx="50" cy="50" r="44" fill="none" stroke="#00E5FF" stroke-width="9" stroke-dasharray="276.46" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+            </svg>
+            <span id="adm-timer-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:monospace;font-size:1.4rem;font-weight:700;color:#00E5FF;"></span>
+          </div>
+        </div>
+        <h2 id="adm-question" class="archivo" style="font-size:1.6rem;line-height:1.45;color:#fff;"></h2>
+      </div>
+
+      <div style="background:rgba(10,15,28,0.8);border:1px solid rgba(0,229,255,0.1);border-radius:1rem;padding:1.25rem;">
+        <p style="font-size:.75rem;color:#64748b;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Answer Options</p>
+        <div id="adm-options" style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;"></div>
+      </div>
+    </div>
+
+    <!-- Right: leaderboard -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h3 class="spaceg" style="font-size:1.1rem;color:#fff;font-weight:700;">Buzz Order</h3>
+        <span id="buzz-count-badge" style="font-size:.78rem;color:#64748b;font-family:monospace;"></span>
+      </div>
+      <div id="leaderboard-list"></div>
+      <div id="no-buzz-msg" style="text-align:center;padding:2rem 1rem;color:#334155;font-size:.9rem;border:1px dashed #1e293b;border-radius:1rem;">
+        Waiting for teams to buzz in...
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+const ADMIN_PW = 'quiz2026';
+const TEAM_COLORS = ['#00E5FF','#a78bfa','#fb923c','#4ade80'];
+const TEAM_COLOR_NAMES = ['Cyan','Purple','Orange','Green'];
+
+// ── shared state (simulates real-time via localStorage) ──
+const STATE_KEY = 'cqa_state_v1';
+
+function getState(){
+  try{return JSON.parse(localStorage.getItem(STATE_KEY))||defaultState();}
+  catch{return defaultState();}
+}
+function setState(s){localStorage.setItem(STATE_KEY,JSON.stringify(s));}
+function defaultState(){
+  return {
+    qIdx:0,
+    timerActive:false,
+    buzzers:[],        // [{teamName,colorIdx,time}] in buzz order
+    phase:'waiting',   // 'waiting' | 'active' | 'revealed'
+  };
+}
+
+// ── team local vars ──
+let myTeamName='';
+let myColorIdx=0;
+let myHasBuzzed=false;
+let myBuzzRank=null;
+let syncInterval=null;
+let timerInt=null;
+
+// ── all 56 questions ──
+const Q=[
+{r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What does HTTPS stand for and what makes it different from HTTP?",o:["HyperText Transfer Protocol Secure — encrypts data in transit using TLS","HyperText Transfer Protocol Speed — loads pages faster","Highly Trusted Protocol Secure — blocks viruses","HyperText Transfer Protocol System — verifies website owners"],c:0},
+{r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is a brute-force attack?",o:["Physically breaking into a server room","Systematically trying every possible password combination until the correct one is found","Tricking a user into revealing their password","Guessing a password based on personal info"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is the main purpose of an antivirus program?",o:["Speed up your computer","Detect, quarantine and remove malicious software","Block unwanted emails","Manage your passwords"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What does the term 'vulnerability' mean in cybersecurity?",o:["A strong security policy","A weakness in a system that can be exploited by an attacker","A type of firewall rule","An encrypted data backup"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"Which of these is an example of multi-factor authentication (MFA)?",o:["Using two different passwords","Entering a password and a fingerprint scan","Answering two security questions","Using the same password on two devices"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is a VPN primarily used for?",o:["Speeding up your internet connection","Encrypting your traffic and masking your IP address","Storing files securely in the cloud","Blocking pop-up advertisements"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is the CIA Triad in information security?",o:["Confidentiality, Integrity, Availability","Cryptography, Identity, Authentication","Control, Inspect, Audit","Confidentiality, Intelligence, Access"],c:0},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What type of attack exploits trusted relationships between systems — compromising a software vendor to attack all its customers simultaneously?",o:["Zero-day exploit","Supply chain attack","Watering hole attack","Privilege escalation"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What is the key difference between symmetric and asymmetric encryption?",o:["Symmetric is slower; asymmetric is faster","Symmetric uses one shared key; asymmetric uses a public-private key pair","Symmetric is only for files; asymmetric only for email","Symmetric uses hardware; asymmetric uses software"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"Which security principle ensures a user cannot later deny having performed an action?",o:["Confidentiality","Integrity","Non-repudiation","Availability"],c:2},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What is the purpose of a SALT when storing passwords in a database?",o:["To encrypt the password before hashing","To add a unique random value to each password before hashing, defeating rainbow table attacks","To double the length of the password","To speed up login verification"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What does 'least privilege' mean as a security principle?",o:["Only admins should use the internet","Users and systems get the minimum permissions needed for their tasks","All users share one powerful admin account","Passwords must be at least 8 characters"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"A penetration tester is given full documentation, source code and system access. What type of test is this?",o:["Black-box test","Grey-box test","White-box test","Red team exercise"],c:2},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"Which type of malware records every keystroke and silently sends it to the attacker?",o:["Adware","Keylogger","Ransomware","Rootkit"],c:1},
+
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"normal",q:"Convert binary 1010 to decimal.",o:["8","10","12","14"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"normal",q:"How many bits are in one byte?",o:["4","6","8","16"],c:2},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"normal",q:"What does ASCII stand for?",o:["American Standard Code for Information Interchange","Advanced System Code for Internet Interface","Automated Sequence of Computer Instructions","American Software Coding Index"],c:0},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"normal",q:"What is the decimal value of binary 11111111?",o:["127","255","128","256"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"normal",q:"Which number system uses digits 0–9 and letters A–F?",o:["Binary","Octal","Decimal","Hexadecimal"],c:3},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"normal",q:"What is the hexadecimal equivalent of decimal 16?",o:["0xF","0x10","0x1F","0x16"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"normal",q:"What does a /24 subnet mask mean in CIDR notation?",o:["24 hosts are allowed","The first 24 bits are the network address","24 subnets are created","Only 24 devices can connect"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"Convert binary 11001010 to hexadecimal.",o:["0xCA","0xAC","0xCB","0xBC"],c:0},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"What is the result of: 0b10110101 XOR 0b11001100?",o:["0b01111001","0b01001001","0b11111101","0b00110011"],c:0},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"What is the decimal value of hexadecimal 0xB4?",o:["164","180","174","184"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"How many usable host addresses does a /26 subnet provide?",o:["30","62","126","14"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"A Caesar cipher shifts letters by 13. The encoded word is 'URYYB'. What is the original word?",o:["WORLD","HELLO","CYBER","GREAT"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"What is the two's complement of −5 in 8-bit binary?",o:["11111010","11111011","10000101","11110101"],c:1},
+{r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"In Base64 encoding, how many ASCII characters represent 3 bytes of binary data?",o:["3","4","6","8"],c:1},
+
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"You receive an email from 'support@paypa1-help.net' saying your account will be suspended. What should you do?",o:["Click the link and verify immediately","Delete and report it as phishing","Forward it to friends as a warning","Reply asking if it is genuine"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"A user's webcam light turns on unexpectedly, the computer runs slowly, and files disappear. What is most likely?",o:["The computer needs an update","A Remote Access Trojan (RAT) is present","The hard drive is full","The graphics card is overheating"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"You receive a text: 'Your parcel is on hold. Pay £1.50 to release it: bit.ly/del99'. What attack is this?",o:["Vishing","Smishing (SMS phishing)","Spear phishing","Whaling"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"Someone calls claiming to be IT support and asks for your login credentials to fix an urgent issue. What attack is this?",o:["Phishing","Vishing (voice phishing)","Pretexting","Shoulder surfing"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"After clicking a link, a user sees 'All your files are encrypted. Send 0.5 BTC to unlock them.' What malware is this?",o:["Spyware","Adware","Ransomware","Browser hijacker"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"A website is flooded with millions of requests from thousands of IPs, making it unavailable. What attack is this?",o:["SQL injection","Cross-site scripting","DDoS (Distributed Denial of Service)","Man-in-the-Middle attack"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"After installing free software, a user gets new browser toolbars, a changed homepage and extra ads. What malware is present?",o:["Rootkit","Ransomware","Adware / Browser hijacker","Fileless malware"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A vendor's build server is compromised and malicious code is injected into an update pushed to 15,000 organisations. What attack is this?",o:["Zero-day exploit","Supply chain attack","Watering hole attack","Spear phishing campaign"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A SIEM shows 50,000 failed SSH attempts in 10 minutes, then one success with the password 'Summer2024!'. What attack succeeded?",o:["Credential stuffing","Dictionary attack","Pass-the-hash","SQL injection"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A CFO receives a voice message that sounds exactly like the CEO, requesting a £500,000 urgent wire transfer. What technique is used?",o:["Traditional vishing","Business Email Compromise","AI deepfake voice phishing","Spear phishing via audio"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A user enters ' OR '1'='1 in a login field and gains access to all accounts. What vulnerability is being exploited?",o:["Cross-site scripting","SQL injection","CSRF","Buffer overflow"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"Malware executes using PowerShell and WMI, writes no files to disk, and leaves no disk artifacts. What type is it?",o:["Rootkit","Ransomware","Fileless malware","Worm"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"An attacker registers 'microsofft.com' and 'gooogle.com' to catch users who mistype popular URLs. What technique is this?",o:["Domain fronting","Pharming","Typosquatting","IDN homograph attack"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"Attackers lived inside a company's network for 11 months quietly exfiltrating data without triggering alerts. What best describes this?",o:["Opportunistic cybercrime","Advanced Persistent Threat (APT)","Script kiddie attack","Insider threat"],c:1},
+
+{r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"What port does HTTPS use by default?",o:["80","443","8080","21"],c:1},
+{r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"What does 'SQL' stand for?",o:["Structured Query Language","Secure Query Layer","System Query Logic","Sequential Queue Language"],c:0},
+{r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"Which protocol does the 'ping' command use?",o:["TCP","UDP","ICMP","ARP"],c:2},
+{r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"What does 'DDoS' stand for?",o:["Distributed Denial of Service","Direct Data over Systems","Dynamic Domain Security","Dual Defence of Systems"],c:0},
+{r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"Which of these is a password manager?",o:["LastPass","LastAid","SafePass","LockBox"],c:0},
+{r:4,rn:"CYBER BUZZER",t:10,d:"hard",q:"What does 'APT' stand for in cybersecurity?",o:["Automated Penetration Test","Advanced Persistent Threat","Application Protection Tool","Active Packet Transfer"],c:1},
+{r:4,rn:"CYBER BUZZER",t:10,d:"hard",q:"Which command-line tool shows the route packets take to reach a destination?",o:["ipconfig","netstat","traceroute / tracert","nslookup"],c:2},
+
+{r:5,rn:"TIE-BREAKER",t:15,d:"hard",q:"In PKI, what does a Certificate Authority (CA) do?",o:["Encrypts all web traffic directly","Issues and digitally signs certificates binding a public key to a verified identity","Stores private keys on behalf of users","Blocks malicious domains at DNS level"],c:1},
+{r:5,rn:"TIE-BREAKER",t:15,d:"hard",q:"What is the Diffie-Hellman key exchange used for?",o:["Encrypting stored files","Allowing two parties to derive a shared secret over an insecure channel","Generating one-way password hashes","Authenticating users with biometrics"],c:1},
+{r:5,rn:"TIE-BREAKER",t:15,d:"hard",q:"What distinguishes a 'pass-the-hash' attack from a brute-force password attack?",o:["Pass-the-hash requires physical access","Pass-the-hash uses a stolen NTLM hash to authenticate without the plaintext password","Pass-the-hash only works on Linux","Pass-the-hash needs the username first"],c:1},
+{r:5,rn:"TIE-BREAKER",t:15,d:"hard",q:"Which OWASP Top 10 (2021) category covers SQL injection, command injection and XSS?",o:["Broken Access Control","Cryptographic Failures","Injection","Security Misconfiguration"],c:2},
+{r:5,rn:"TIE-BREAKER",t:15,d:"hard",q:"A UEFI rootkit persists after a complete OS reinstall and hard drive replacement. Why?",o:["It hides inside RAM","It resides in firmware on the motherboard's SPI flash chip, below the OS","It encrypts the bootloader on a USB drive","It disables USB and network ports"],c:1},
+{r:5,rn:"TIE-BREAKER",t:15,d:"hard",q:"What is 'Perfect Forward Secrecy' (PFS) and why is it important in TLS?",o:["Ensures passwords are never stored in plaintext","Generates unique session keys per connection so compromising the server's private key can't decrypt past sessions","Forces users to change passwords after every session","Prevents brute-force attacks by locking accounts"],c:1},
+{r:5,rn:"TIE-BREAKER",t:15,d:"hard",q:"Which attack uses stolen credential pairs from one breach to log into different services, exploiting password reuse?",o:["Brute-force attack","Credential stuffing","Password spraying","Kerberoasting"],c:1},
+];
+
+// ── helpers ──
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+let selectedColorIdx=0;
+function pickColor(idx,btn){
+  selectedColorIdx=idx;
+  document.querySelectorAll('#s-team-setup button[onclick^="pickColor"]').forEach((b,i)=>{
+    const cols=['#00E5FF','#a78bfa','#fb923c','#4ade80'];
+    b.style.borderColor=i===idx?cols[idx]:'transparent';
+  });
+}
+
+function joinAsBuzzer(){
+  const name=document.getElementById('team-name-input').value.trim();
+  if(!name){document.getElementById('team-name-input').focus();return;}
+  myTeamName=name;
+  myColorIdx=selectedColorIdx;
+  myHasBuzzed=false;
+  myBuzzRank=null;
+
+  document.getElementById('bz-team-name').textContent=name;
+  document.getElementById('bz-team-name').style.color=TEAM_COLORS[myColorIdx];
+  const badge=document.getElementById('bz-team-badge');
+  badge.textContent=TEAM_COLOR_NAMES[myColorIdx];
+  badge.style.background=TEAM_COLORS[myColorIdx]+'28';
+  badge.style.color=TEAM_COLORS[myColorIdx];
+  badge.style.border='1px solid '+TEAM_COLORS[myColorIdx]+'60';
+
+  goTo('s-buzzer');
+  refreshBuzzerScreen();
+  if(syncInterval)clearInterval(syncInterval);
+  syncInterval=setInterval(refreshBuzzerScreen,500);
+}
+
+function checkAdminPw(){
+  const v=document.getElementById('admin-pw-input').value;
+  if(v===ADMIN_PW){
+    document.getElementById('pw-error').textContent='';
+    goTo('s-admin');
+    renderAdminQuestion();
+    if(syncInterval)clearInterval(syncInterval);
+    syncInterval=setInterval(refreshAdminLeaderboard,400);
+  } else {
+    document.getElementById('pw-error').textContent='Incorrect password. Try again.';
+    document.getElementById('admin-pw-input').value='';
+  }
+}
+
+// ── TEAM BUZZER logic ──
+function pressBuzzer(){
+  const st=getState();
+  if(myHasBuzzed||st.phase!=='active')return;
+
+  const alreadyIn=st.buzzers.find(b=>b.teamName===myTeamName);
+  if(alreadyIn)return;
+
+  myHasBuzzed=true;
+  st.buzzers.push({teamName:myTeamName,colorIdx:myColorIdx,time:Date.now()});
+  setState(st);
+  refreshBuzzerScreen();
+}
+
+function refreshBuzzerScreen(){
+  const st=getState();
+  const q=Q[st.qIdx];
+  const btn=document.getElementById('buzzer-btn');
+  const lbl=document.getElementById('buzzer-label');
+  const badge=document.getElementById('buzz-rank-badge');
+  const msg=document.getElementById('bz-status-msg');
+
+  document.getElementById('bz-round-info').textContent=`Round ${q.r} · Q${st.qIdx+1} of ${Q.length}`;
+  document.getElementById('bz-q-label').textContent=`Round ${q.r} — ${q.rn}`;
+  document.getElementById('bz-question').textContent=st.phase==='waiting'?'Waiting for quizmaster to start the question...':q.q;
+
+  const myEntry=st.buzzers.find(b=>b.teamName===myTeamName);
+  const myRank=myEntry?st.buzzers.indexOf(myEntry)+1:null;
+
+  btn.className='buzzer';
+  badge.style.display='none';
+
+  if(st.phase==='waiting'){
+    lbl.textContent='GET READY';
+    btn.classList.add('locked');
+    msg.textContent='Quizmaster will start the question shortly...';
+    myHasBuzzed=false;
+  } else if(st.phase==='active'){
+    if(myEntry){
+      btn.classList.add('buzzed');
+      lbl.textContent='BUZZED!';
+      badge.style.display='flex';
+      badge.className='buzz-rank rank-'+myRank;
+      badge.textContent='#'+myRank;
+      msg.style.color=['#facc15','#94a3b8','#c2800a','#64748b'][myRank-1]||'#64748b';
+      msg.textContent=['🥇 First! You buzzed first!','🥈 Second to buzz','🥉 Third to buzz','4th to buzz'][myRank-1]||'You buzzed #'+myRank;
+    } else {
+      lbl.textContent='BUZZ!';
+      msg.textContent='Buzzer is open — press to answer!';
+      msg.style.color='#64748b';
+    }
+  }
+}
+
+// ── ADMIN logic ──
+let admTimerInt=null;
+
+function renderAdminQuestion(){
+  const st=getState();
+  if(st.phase==='waiting'){
+    // init fresh question
+    st.buzzers=[];
+    setState(st);
+  }
+  const q=Q[st.qIdx];
+
+  document.getElementById('adm-progress').textContent=`Q ${st.qIdx+1} / ${Q.length}`;
+  document.getElementById('adm-round-pill').textContent=`Round ${q.r} — ${q.rn}`;
+  const diff=document.getElementById('adm-diff');
+  diff.textContent=q.d.toUpperCase();
+  diff.className='diff diff-'+q.d;
+  document.getElementById('adm-question').textContent=q.q;
+  document.getElementById('adm-next-btn').disabled=(st.qIdx>=Q.length-1);
+
+  const optCont=document.getElementById('adm-options');
+  optCont.innerHTML='';
+  q.o.forEach((opt,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText='padding:.6rem .9rem;border-radius:.6rem;font-size:.9rem;line-height:1.4;'+(i===q.c?'background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);color:#4ade80;':'background:rgba(15,25,45,0.8);border:1px solid #1e293b;color:#94a3b8;');
+    d.textContent=String.fromCharCode(65+i)+'. '+opt;
+    optCont.appendChild(d);
+  });
+
+  startAdminTimer(q);
+  refreshAdminLeaderboard();
+}
+
+function startAdminTimer(q){
+  if(admTimerInt)clearInterval(admTimerInt);
+  const st=getState();
+  if(st.phase==='waiting'){
+    // activate question
+    st.phase='active';
+    setState(st);
+  }
+
+  let left=q.t;
+  const circ=276.46;
+  const ring=document.getElementById('adm-timer-ring');
+  const txt=document.getElementById('adm-timer-text');
+  txt.textContent=left;
+  ring.setAttribute('stroke-dashoffset',0);
+  ring.setAttribute('stroke','#00E5FF');
+  txt.style.color='#00E5FF';
+
+  admTimerInt=setInterval(()=>{
+    left--;
+    txt.textContent=left;
+    ring.setAttribute('stroke-dashoffset',circ*(1-left/q.t));
+    if(left<=5){ring.setAttribute('stroke','#ef4444');txt.style.color='#ef4444';}
+    if(left<=0){clearInterval(admTimerInt);txt.textContent='0';}
+  },1000);
+}
+
+function refreshAdminLeaderboard(){
+  const st=getState();
+  const list=document.getElementById('leaderboard-list');
+  const noMsg=document.getElementById('no-buzz-msg');
+  const countBadge=document.getElementById('buzz-count-badge');
+
+  countBadge.textContent=st.buzzers.length+' team'+(st.buzzers.length!==1?'s':'')+' buzzed';
+
+  if(st.buzzers.length===0){
+    list.innerHTML='';
+    noMsg.style.display='block';
+    return;
+  }
+  noMsg.style.display='none';
+
+  const rankClass=['first','second','third',''];
+  const rankLabel=['1st','2nd','3rd','4th'];
+  const rankColors=['#facc15','#94a3b8','#c2800a','#475569'];
+
+  list.innerHTML='';
+  st.buzzers.forEach((b,i)=>{
+    const row=document.createElement('div');
+    row.className='lb-row pop '+(rankClass[i]||'');
+    row.innerHTML=`
+      <div class="lb-num" style="background:${rankColors[i]}22;color:${rankColors[i]};border:1.5px solid ${rankColors[i]};">${rankLabel[i]||i+1}</div>
+      <div style="flex:1;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;color:${TEAM_COLORS[b.colorIdx]||'#fff'};">${b.teamName}</div>
+        <div style="font-size:.75rem;color:#64748b;margin-top:.1rem;">${TEAM_COLOR_NAMES[b.colorIdx]} team</div>
+      </div>
+      <div style="font-size:.75rem;font-family:monospace;color:#475569;">${i===0?'⚡ First!':''}</div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function resetBuzzers(){
+  const st=getState();
+  st.buzzers=[];
+  st.phase='active';
+  setState(st);
+  refreshAdminLeaderboard();
+}
+
+function adminNext(){
+  if(admTimerInt)clearInterval(admTimerInt);
+  const st=getState();
+  if(st.qIdx<Q.length-1){
+    st.qIdx++;
+    st.buzzers=[];
+    st.phase='active';
+    setState(st);
+    renderAdminQuestion();
+  }
+}
+
+// ── particles ──
+function createParticles(){
+  const c=document.getElementById('particles');
+  if(!c)return;
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div');
+    const s=Math.random()*4+2;
+    p.style.cssText=`position:absolute;width:${s}px;height:${s}px;background:#00E5FF;border-radius:50%;opacity:.15;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:floatUp ${Math.random()*20+15}s linear infinite;animation-delay:-${Math.random()*20}s`;
+    c.appendChild(p);
+  }
+}
+
+window.onload=createParticles;
+</script>
+</body>
+</html>
