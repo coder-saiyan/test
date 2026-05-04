@@ -73,39 +73,36 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
 
 <!-- FIREBASE CONFIG -->
 <section class="screen" id="s-firebase">
-  <div style="max-width:560px;margin:auto;width:100%;display:flex;flex-direction:column;gap:1.25rem;padding:2rem;">
-    <div style="text-align:center;margin-bottom:.25rem;">
-      <div style="font-size:2rem;margin-bottom:.5rem;">🔥</div>
-      <h2 class="archivo" style="font-size:1.7rem;color:#fff;">Firebase Setup</h2>
-      <p style="color:#64748b;margin-top:.4rem;font-size:.86rem;line-height:1.6;">Paste your Firebase Realtime Database URL below.<br>This enables live sync across all devices on any network.</p>
+  <div style="max-width:560px;margin:auto;width:100%;display:flex;flex-direction:column;gap:2rem;padding:2rem;min-height:100vh;justify-content:center;">
+    
+    <div style="text-align:center;">
+      <div style="font-size:3.5rem;margin-bottom:1rem;">🔥</div>
+      <h2 class="archivo" style="font-size:2rem;color:#fff;">Firebase Setup</h2>
+      <p style="color:#64748b;margin-top:0.5rem;font-size:1rem;line-height:1.5;">
+        Click below to connect using saved configuration.<br>
+        <strong>Live sync will be enabled automatically.</strong>
+      </p>
     </div>
 
-    <div class="card" style="display:flex;flex-direction:column;gap:1rem;">
-      <div>
-        <label style="font-size:.76rem;color:#94a3b8;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.4rem;display:block;">Firebase Database URL</label>
-        <input type="text" id="fb-url-input" placeholder="https://your-project-default-rtdb.firebaseio.com"/>
-        <p style="font-size:.75rem;color:#475569;margin-top:.4rem;">Find this in Firebase Console → Realtime Database → Data tab</p>
-      </div>
-      <div>
-        <label style="font-size:.76rem;color:#94a3b8;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.4rem;display:block;">Firebase API Key</label>
-        <input type="text" id="fb-key-input" placeholder="AIzaSy..."/>
-      </div>
+    <div style="background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:1rem;padding:1.5rem;">
+      <p style="font-size:0.85rem;color:#facc15;font-weight:600;margin-bottom:0.8rem;">Using Saved Configuration</p>
+      <ul style="font-size:0.9rem;color:#94a3b8;line-height:1.7;padding-left:1.2rem;margin:0;">
+        <li>Realtime Database enabled</li>
+        <li>Live sync across devices</li>
+        <li>No need to enter URL/Key every time</li>
+      </ul>
     </div>
 
-    <div style="background:rgba(250,204,21,0.06);border:1px solid rgba(250,204,21,0.2);border-radius:1rem;padding:1rem 1.25rem;">
-      <p style="font-size:.78rem;color:#facc15;font-weight:600;margin-bottom:.4rem;">Quick Setup (2 minutes)</p>
-      <ol style="font-size:.78rem;color:#94a3b8;line-height:1.9;padding-left:1.1rem;">
-        <li>Go to <span style="color:var(--neon);">console.firebase.google.com</span></li>
-        <li>Create a project → Add Realtime Database</li>
-        <li>Set rules to <code style="color:#4ade80;">{ "rules": { ".read": true, ".write": true } }</code></li>
-        <li>Copy the Database URL and API Key from Project Settings</li>
-        <li>Paste above and connect — all devices share the same session instantly</li>
-      </ol>
+    <p id="fb-error" style="color:#f87171;font-size:0.9rem;text-align:center;min-height:1.3rem;"></p>
+
+    <button class="neon-btn" style="width:100%;padding:1.1rem;font-size:1.1rem;" onclick="connectFirebase()">
+      CONNECT TO FIREBASE →
+    </button>
+
+    <div style="text-align:center;">
+      <button class="ghost-btn" onclick="goTo('s-landing')">← Back</button>
     </div>
 
-    <p id="fb-error" style="color:#f87171;font-size:.83rem;text-align:center;min-height:1.1rem;"></p>
-    <button class="neon-btn" style="width:100%;font-size:1rem;" onclick="connectFirebase()">CONNECT & CONTINUE →</button>
-    <div style="text-align:center;"><button class="ghost-btn" onclick="goTo('s-landing')">← Back</button></div>
   </div>
 </section>
 
@@ -261,7 +258,7 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
         <h2 id="adm-question" class="archivo" style="font-size:1.55rem;line-height:1.45;color:#fff;"></h2>
       </div>
       <div style="background:rgba(10,15,28,0.85);border:1px solid rgba(0,229,255,0.1);border-radius:1rem;padding:1.1rem 1.3rem;">
-        <p style="font-size:.72rem;color:#475569;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem;">Options — <span style="color:#4ade80;">correct answer highlighted</span> (admin only)</p>
+        <p style="font-size:.72rem;color:#475569;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem;">Options — <span style="color:#4ade80;">options</span></p>
         <div id="adm-options" style="display:grid;grid-template-columns:1fr 1fr;gap:.55rem;"></div>
       </div>
     </div>
@@ -303,27 +300,48 @@ function goTo(id) {
 }
 window.goTo = goTo;
 
-// ── Firebase connect ──
+// ── Firebase Connect (Auto using saved config) ──
 window.connectFirebase = function() {
-  const url = document.getElementById('fb-url-input').value.trim();
-  const key = document.getElementById('fb-key-input').value.trim();
   const err = document.getElementById('fb-error');
-  if (!url || !key) { err.textContent = 'Please fill in both fields.'; return; }
-  if (!url.startsWith('https://')) { err.textContent = 'Database URL must start with https://'; return; }
   err.textContent = '';
+
+  // Hardcoded values (no input needed anymore)
+  const url = "https://cyber-quiz-27abb-default-rtdb.asia-southeast1.firebasedatabase.app/";
+  const key = "BNL8VLrw_xY6zHAHWI64WUXYf70R8QyU8hvwM1SAfxGhkica4rXdoEPM0vNn4-TygixaM8Mk5Bd2xQPmAfmOj6s";
+
+  const btn = document.querySelector('#s-firebase button.neon-btn');
+  const originalText = btn.textContent;
+  btn.textContent = "CONNECTING...";
+  btn.disabled = true;
+
   try {
-    const app = initializeApp({ apiKey: key, databaseURL: url }, 'cqa-' + Date.now());
+    const app = initializeApp({ 
+      apiKey: key, 
+      databaseURL: url 
+    }, 'cqa-' + Date.now());
+
     db = getDatabase(app);
     stateRef = ref(db, 'quizState');
-    // test connection by writing a ping
+
+    // Test connection
     set(ref(db, 'ping'), Date.now())
-      .then(() => { err.textContent = ''; goTo('s-role'); })
-      .catch(e => { err.textContent = 'Connection failed: ' + e.message; });
+      .then(() => {
+        err.textContent = '';
+        goTo('s-role');        // Change to your next screen if needed
+      })
+      .catch(e => {
+        err.textContent = 'Connection failed: ' + e.message;
+      });
   } catch(e) {
     err.textContent = 'Invalid config: ' + e.message;
+  } finally {
+    // Reset button after a short delay
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }, 1500);
   }
 };
-
 // ── colour picker ──
 let selCi = 0;
 const CI_BORDERS = ['#00E5FF','#a78bfa','#fb923c','#4ade80'];
@@ -553,7 +571,7 @@ function renderAdminState(st) {
   optCont.innerHTML = '';
   q.o.forEach((opt, i) => {
     const d = document.createElement('div');
-    d.className = 'adm-opt ' + (i === q.c ? 'adm-opt-correct' : 'adm-opt-normal');
+    d.className = 'adm-opt adm-opt-normal';
     d.textContent = String.fromCharCode(65 + i) + '. ' + opt;
     optCont.appendChild(d);
   });
