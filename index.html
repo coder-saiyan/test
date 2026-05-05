@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,23 +29,23 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
 .buzzer:active:not(.locked):not(.buzzed){transform:scale(.95);}
 .buzzer.buzzed{background:rgba(0,229,255,0.2);}
 .buzzer.locked{border-color:#1e293b;color:#334155;cursor:default;background:transparent;}
-.buzz-rank-badge{position:absolute;top:-8px;right:-8px;width:36px;height:36px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:1rem;font-weight:700;font-family:'Space Grotesk',sans-serif;}
+.buzz-rank-badge{position:absolute;top:-8px;right:-8px;width:38px;height:38px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;font-family:'Space Grotesk',sans-serif;}
 .opt-row{background:rgba(20,30,50,0.9);border:1.5px solid #2d3f5a;border-radius:.9rem;padding:.9rem 1.1rem;font-size:1rem;color:#e0f2fe;line-height:1.4;}
-.adm-opt{padding:.6rem .9rem;border-radius:.6rem;font-size:.88rem;line-height:1.4;background:rgba(15,25,45,0.8);border:1px solid #1e293b;color:#94a3b8;}
+/* Admin options — large hall display */
+.adm-opt{padding:1.15rem 1.5rem;border-radius:.9rem;font-size:1.4rem;line-height:1.5;font-family:'Space Grotesk',sans-serif;font-weight:500;background:rgba(15,25,45,0.85);border:1.5px solid #1e3a5a;color:#94a3b8;}
 .lb-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;border-radius:.9rem;border:1px solid rgba(0,229,255,0.1);margin-bottom:.55rem;background:rgba(10,20,40,0.85);}
 .lb-row.r1{border-color:#facc15;background:rgba(250,204,21,0.07);}
 .lb-row.r2{border-color:#94a3b8;background:rgba(148,163,184,0.07);}
 .lb-row.r3{border-color:#c2800a;background:rgba(194,128,10,0.07);}
 .lb-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;font-family:'Space Grotesk',sans-serif;flex-shrink:0;}
-.diff{font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.17rem .48rem;border-radius:99px;}
+.diff{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.2rem .55rem;border-radius:99px;}
 .diff-normal{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.28);}
 .diff-hard{background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.28);}
-.rpill{display:inline-flex;align-items:center;gap:.45rem;padding:.3rem .9rem;border:1px solid rgba(0,229,255,0.28);border-radius:99px;font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#67e8f9;}
+.rpill{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem 1rem;border:1px solid rgba(0,229,255,0.28);border-radius:99px;font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#67e8f9;}
 .timer-wrap{position:relative;flex-shrink:0;}
 .waiting-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;flex:1;text-align:center;padding:2rem;}
 .ctrl-btn{border-radius:.75rem;padding:.45rem .9rem;cursor:pointer;font-size:.8rem;font-family:'Space Grotesk',sans-serif;font-weight:600;border:1px solid;transition:all .2s;}
 .ctrl-btn:disabled{opacity:.3;cursor:default;}
-/* paused overlay on team screens */
 .paused-overlay{display:none;position:fixed;inset:0;background:rgba(5,7,13,0.92);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;text-align:center;padding:2rem;}
 .paused-overlay.show{display:flex;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -125,13 +124,11 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
 
 <!-- TEAM BUZZER SCREEN -->
 <section class="screen" id="s-buzzer">
-  <!-- Paused overlay shown on team screens when admin pauses -->
   <div class="paused-overlay" id="paused-overlay">
     <div style="font-size:3rem;">⏸️</div>
     <h2 class="archivo" style="font-size:2rem;color:#fff;">Quiz Paused</h2>
     <p style="color:#64748b;font-size:1rem;">The quizmaster has paused the quiz.<br>Please wait...</p>
   </div>
-
   <div class="status-bar">
     <div style="display:flex;align-items:center;gap:.75rem;">
       <span id="bz-team-name" class="spaceg" style="font-size:1.15rem;font-weight:700;"></span>
@@ -142,7 +139,6 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
       <span id="bz-q-counter" style="font-family:monospace;color:#64748b;font-size:.82rem;"></span>
     </div>
   </div>
-
   <div class="waiting-msg" id="bz-waiting">
     <div style="width:60px;height:60px;border-radius:50%;border:2px solid #1e293b;display:flex;align-items:center;justify-content:center;">
       <div style="width:12px;height:12px;border-radius:50%;background:#334155;animation:pulse 1.8s infinite;"></div>
@@ -150,7 +146,6 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
     <p class="archivo" style="font-size:1.4rem;color:#475569;">Waiting for quizmaster...</p>
     <p style="color:#334155;font-size:.88rem;">The question will appear here when the quizmaster starts it</p>
   </div>
-
   <div id="bz-active" style="display:none;flex:1;flex-direction:column;padding:1.5rem 2rem;gap:1.25rem;max-width:900px;width:100%;margin:0 auto;">
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
       <span id="bz-rpill" class="rpill"></span>
@@ -199,77 +194,55 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
       <span class="spaceg" style="font-weight:700;color:#fff;font-size:1rem;">Quizmaster Panel</span>
       <span id="adm-progress" style="font-family:monospace;color:#475569;font-size:.82rem;"></span>
     </div>
-    <!-- Controls -->
     <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">
-
-      <!-- RESET BUZZERS -->
-      <button id="btn-reset" onclick="resetBuzzers()"
-        class="ctrl-btn" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3);color:#f87171;">
-        RESET BUZZERS
-      </button>
-
-      <!-- START / PAUSE -->
-      <button id="btn-pause" onclick="togglePause()"
-        class="ctrl-btn" style="background:rgba(250,204,21,0.08);border-color:rgba(250,204,21,0.3);color:#facc15;min-width:90px;">
-        ⏸ PAUSE
-      </button>
-
-      <!-- PREV -->
-      <button id="btn-prev" onclick="adminPrev()"
-        class="ctrl-btn" style="background:rgba(0,229,255,0.07);border-color:rgba(0,229,255,0.3);color:var(--neon);" disabled>
-        ← PREV
-      </button>
-
-      <!-- NEXT -->
-      <button id="btn-next" onclick="adminNext()"
-        class="ctrl-btn" style="background:rgba(0,229,255,0.12);border-color:var(--neon);color:var(--neon);font-size:.85rem;padding:.5rem 1.1rem;">
-        NEXT QUESTION →
-      </button>
-
+      <button id="btn-reset" onclick="resetBuzzers()" class="ctrl-btn" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3);color:#f87171;">RESET BUZZERS</button>
+      <button id="btn-pause" onclick="togglePause()" class="ctrl-btn" style="background:rgba(250,204,21,0.08);border-color:rgba(250,204,21,0.3);color:#facc15;min-width:100px;">⏸ PAUSE</button>
+      <button id="btn-prev" onclick="adminPrev()" class="ctrl-btn" style="background:rgba(0,229,255,0.07);border-color:rgba(0,229,255,0.3);color:var(--neon);" disabled>← PREV</button>
+      <button id="btn-next" onclick="adminNext()" class="ctrl-btn" style="background:rgba(0,229,255,0.12);border-color:var(--neon);color:var(--neon);font-size:.85rem;padding:.5rem 1.1rem;">NEXT QUESTION →</button>
     </div>
   </div>
 
-  <div style="flex:1;display:grid;grid-template-columns:1fr 360px;gap:1.1rem;padding:1.1rem;max-width:1280px;width:100%;margin:0 auto;align-items:start;">
+  <div style="flex:1;display:grid;grid-template-columns:1fr 400px;gap:1.25rem;padding:1.25rem;max-width:1600px;width:100%;margin:0 auto;align-items:start;">
 
-    <!-- LEFT -->
-    <div style="display:flex;flex-direction:column;gap:.9rem;">
+    <!-- LEFT: question + options (large hall display) -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
 
-      <!-- waiting banner -->
       <div id="adm-waiting-banner" style="background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.25);border-radius:1rem;padding:1.25rem 1.5rem;text-align:center;">
-        <p class="spaceg" style="color:#facc15;font-size:1rem;font-weight:700;">Press NEXT QUESTION to begin</p>
-        <p style="color:#64748b;font-size:.85rem;margin-top:.3rem;">Teams are waiting — start when ready</p>
+        <p class="spaceg" style="color:#facc15;font-size:1.1rem;font-weight:700;">Press NEXT QUESTION to begin</p>
+        <p style="color:#64748b;font-size:.9rem;margin-top:.3rem;">Teams are waiting — start when ready</p>
       </div>
 
-      <!-- paused banner (admin side) -->
       <div id="adm-paused-banner" style="display:none;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.3);border-radius:1rem;padding:1rem 1.5rem;text-align:center;">
-        <p class="spaceg" style="color:#facc15;font-weight:700;">⏸ Quiz is PAUSED — team screens are frozen</p>
+        <p class="spaceg" style="color:#facc15;font-weight:700;font-size:1rem;">⏸ Quiz is PAUSED — team screens are frozen</p>
       </div>
 
-      <div id="adm-q-card" style="background:rgba(5,10,22,0.95);border:1px solid rgba(0,229,255,0.18);border-radius:1.25rem;padding:1.4rem 1.75rem;">
-        <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:1rem;flex-wrap:wrap;">
-          <span id="adm-rpill" class="rpill"></span>
+      <!-- Question card — big text for hall projector -->
+      <div id="adm-q-card" style="background:rgba(5,10,22,0.95);border:1px solid rgba(0,229,255,0.2);border-radius:1.5rem;padding:2.25rem 2.75rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.75rem;flex-wrap:wrap;">
+          <span id="adm-rpill" class="rpill" style="font-size:.82rem;padding:.4rem 1.1rem;"></span>
           <span id="adm-diff" class="diff"></span>
           <div style="margin-left:auto;" class="timer-wrap">
-            <svg width="64" height="64" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="44" fill="none" stroke="#1e293b" stroke-width="9"/>
-              <circle id="adm-timer-ring" cx="50" cy="50" r="44" fill="none" stroke="#00E5FF" stroke-width="9" stroke-dasharray="276.46" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+            <svg width="96" height="96" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="44" fill="none" stroke="#1e293b" stroke-width="8"/>
+              <circle id="adm-timer-ring" cx="50" cy="50" r="44" fill="none" stroke="#00E5FF" stroke-width="8" stroke-dasharray="276.46" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 50 50)"/>
             </svg>
-            <span id="adm-timer-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:monospace;font-size:1.35rem;font-weight:700;color:#00E5FF;"></span>
+            <span id="adm-timer-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:monospace;font-size:1.9rem;font-weight:700;color:#00E5FF;"></span>
           </div>
         </div>
-        <h2 id="adm-question" class="archivo" style="font-size:1.55rem;line-height:1.45;color:#fff;"></h2>
+        <!-- HALL-SIZE QUESTION -->
+        <h2 id="adm-question" class="archivo" style="font-size:clamp(1.8rem,3.2vw,2.8rem);line-height:1.38;color:#fff;"></h2>
       </div>
 
-      <div style="background:rgba(10,15,28,0.85);border:1px solid rgba(0,229,255,0.1);border-radius:1rem;padding:1.1rem 1.3rem;">
-        <p style="font-size:.72rem;color:#475569;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem;">Answer Options</p>
-        <div id="adm-options" style="display:grid;grid-template-columns:1fr 1fr;gap:.55rem;"></div>
+      <!-- Options — hall size -->
+      <div style="background:rgba(8,14,30,0.92);border:1px solid rgba(0,229,255,0.1);border-radius:1.35rem;padding:1.5rem 1.75rem;">
+        <div id="adm-options" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;"></div>
       </div>
     </div>
 
     <!-- RIGHT: leaderboard -->
     <div style="display:flex;flex-direction:column;gap:.85rem;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
-        <h3 class="spaceg" style="font-size:1.05rem;color:#fff;font-weight:700;">Buzz Order</h3>
+        <h3 class="spaceg" style="font-size:1.1rem;color:#fff;font-weight:700;">Buzz Order</h3>
         <span id="buzz-count" style="font-size:.75rem;color:#475569;font-family:monospace;"></span>
       </div>
       <div id="lb-list"></div>
@@ -279,18 +252,19 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
 </section>
 
 <script type="module">
-import { initializeApp }                               from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, update, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { initializeApp }                                      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, onValue, update, get,
+         runTransaction }                                     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-// ── HARDCODED CONFIG ─────────────────────────────────
-const app      = initializeApp({
+// ── FIREBASE ──────────────────────────────────────────
+const app = initializeApp({
   apiKey:      "BNL8VLrw_xY6zHAHWI64WUXYf70R8QyU8hvwM1SAfxGhkica4rXdoEPM0vNn4-TygixaM8Mk5Bd2xQPmAfmOj6s",
   databaseURL: "https://cyber-quiz-27abb-default-rtdb.asia-southeast1.firebasedatabase.app/"
 });
 const db       = getDatabase(app);
 const stateRef = ref(db, 'quizState');
 
-// ── CONSTANTS ────────────────────────────────────────
+// ── CONSTANTS ─────────────────────────────────────────
 const ADMIN_PW    = 'quiz2026';
 const TEAM_COLORS = ['#00E5FF','#a78bfa','#fb923c','#4ade80'];
 const COLOR_NAMES = ['Cyan','Purple','Orange','Green'];
@@ -298,337 +272,335 @@ const RANK_COLORS = ['#facc15','#94a3b8','#c2800a','#475569'];
 const RANK_LABELS = ['1st','2nd','3rd','4th'];
 const RANK_CLASS  = ['r1','r2','r3',''];
 
-// ── LOCAL ────────────────────────────────────────────
+// ── LOCAL ─────────────────────────────────────────────
 let myName='', myCi=0, myBuzzed=false, timerExpired=false;
-let bzTimerInt=null, admTimerInt=null;
-let bzTimerQIdx=-1,  admTimerQIdx=-1;
+let bzTimerInt=null, admTimerInt=null, bzTimerQIdx=-1, admTimerQIdx=-1;
+// Track last buzz list length so team screen rank badge only appears after server confirms
+let lastBuzzCount = 0;
 
-// ── NAV ──────────────────────────────────────────────
+// ── NAV ───────────────────────────────────────────────
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-window.goTo=goTo;
+window.goTo = goTo;
 
 // ── COLOUR PICKER ─────────────────────────────────────
-let selCi=0;
-const CI_BORDERS=['#00E5FF','#a78bfa','#fb923c','#4ade80'];
-window.pickColor=function(ci){
-  selCi=ci;
+let selCi = 0;
+const CI_BORDERS = ['#00E5FF','#a78bfa','#fb923c','#4ade80'];
+window.pickColor = function(ci){
+  selCi = ci;
   document.querySelectorAll('#s-team-setup button[data-ci]').forEach(b=>{
-    b.style.borderColor=parseInt(b.dataset.ci)===ci?CI_BORDERS[ci]:'transparent';
+    b.style.borderColor = parseInt(b.dataset.ci)===ci ? CI_BORDERS[ci] : 'transparent';
   });
 };
 
 // ── TEAM JOIN ─────────────────────────────────────────
-window.joinAsBuzzer=function(){
-  const n=document.getElementById('team-name-input').value.trim();
-  if(!n){document.getElementById('team-name-input').focus();return;}
-  myName=n; myCi=selCi; myBuzzed=false;
-  document.getElementById('bz-color-dot').style.background=TEAM_COLORS[myCi];
-  document.getElementById('bz-team-name').textContent=myName;
-  document.getElementById('bz-team-name').style.color=TEAM_COLORS[myCi];
+window.joinAsBuzzer = function(){
+  const n = document.getElementById('team-name-input').value.trim();
+  if(!n){ document.getElementById('team-name-input').focus(); return; }
+  myName = n; myCi = selCi; myBuzzed = false;
+  document.getElementById('bz-color-dot').style.background = TEAM_COLORS[myCi];
+  document.getElementById('bz-team-name').textContent = myName;
+  document.getElementById('bz-team-name').style.color  = TEAM_COLORS[myCi];
   goTo('s-buzzer');
-  onValue(stateRef,snap=>renderBuzzerState(snap.val()||makeState()));
+  onValue(stateRef, snap => renderBuzzerState(snap.val() || makeState()));
 };
 
 // ── ADMIN LOGIN ───────────────────────────────────────
-window.checkAdminPw=function(){
-  const v=document.getElementById('admin-pw-input').value;
-  if(v===ADMIN_PW){
-    document.getElementById('pw-error').textContent='';
+window.checkAdminPw = function(){
+  const v = document.getElementById('admin-pw-input').value;
+  if(v === ADMIN_PW){
+    document.getElementById('pw-error').textContent = '';
     goTo('s-admin');
-    onValue(stateRef,snap=>renderAdminState(snap.val()||makeState()));
+    onValue(stateRef, snap => renderAdminState(snap.val() || makeState()));
   } else {
-    document.getElementById('pw-error').textContent='Incorrect password.';
-    document.getElementById('admin-pw-input').value='';
+    document.getElementById('pw-error').textContent = 'Incorrect password.';
+    document.getElementById('admin-pw-input').value = '';
   }
 };
 
 function makeState(){
-  return {phase:'idle',qIdx:-1,buzzers:{},startedAt:null,timerExpired:false,paused:false};
+  return { phase:'idle', qIdx:-1, buzzers:{}, startedAt:null, timerExpired:false, paused:false };
 }
 
-// ═══════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
+// HELPER — get sorted buzzer array from Firebase object
+// KEY FIX: sort strictly by ts (timestamp) so order is
+// always insertion-time order, never key-alpha order.
+// ═════════════════════════════════════════════════════
+function getSortedBuzzers(buzzersObj){
+  if(!buzzersObj) return [];
+  return Object.values(buzzersObj).sort((a, b) => a.ts - b.ts);
+}
+
+// ═════════════════════════════════════════════════════
 // TEAM BUZZER
-// ═══════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function renderBuzzerState(st){
-  // paused overlay
-  const overlay=document.getElementById('paused-overlay');
-  if(st.paused && st.phase==='active'){
-    overlay.classList.add('show');
-  } else {
-    overlay.classList.remove('show');
-  }
+  const overlay = document.getElementById('paused-overlay');
+  (st.paused && st.phase==='active') ? overlay.classList.add('show') : overlay.classList.remove('show');
 
-  const waiting=document.getElementById('bz-waiting');
-  const active =document.getElementById('bz-active');
+  const waiting = document.getElementById('bz-waiting');
+  const active  = document.getElementById('bz-active');
 
-  if(st.phase==='idle'||st.qIdx<0){
-    waiting.style.display='flex'; active.style.display='none';
-    clearInterval(bzTimerInt); bzTimerQIdx=-1; myBuzzed=false; timerExpired=false;
+  if(st.phase==='idle' || st.qIdx < 0){
+    waiting.style.display = 'flex'; active.style.display = 'none';
+    clearInterval(bzTimerInt); bzTimerQIdx = -1; myBuzzed = false; timerExpired = false;
+    lastBuzzCount = 0;
     resetBuzzerBtn(); return;
   }
 
-  waiting.style.display='none'; active.style.display='flex';
+  waiting.style.display = 'none'; active.style.display = 'flex';
 
-  const q=Q[st.qIdx];
-  document.getElementById('bz-q-counter').textContent=`Q ${st.qIdx+1} / ${Q.length}`;
-  document.getElementById('bz-rpill').textContent=`Round ${q.r} — ${q.rn}`;
-  const diff=document.getElementById('bz-diff');
-  diff.textContent=q.d.toUpperCase(); diff.className='diff diff-'+q.d;
-  document.getElementById('bz-question').textContent=q.q;
+  const q = Q[st.qIdx];
+  document.getElementById('bz-q-counter').textContent = `Q ${st.qIdx+1} / ${Q.length}`;
+  document.getElementById('bz-rpill').textContent = `Round ${q.r} — ${q.rn}`;
+  const diff = document.getElementById('bz-diff');
+  diff.textContent = q.d.toUpperCase(); diff.className = 'diff diff-'+q.d;
+  document.getElementById('bz-question').textContent = q.q;
 
-  const optCont=document.getElementById('bz-options');
-  optCont.innerHTML='';
+  const optCont = document.getElementById('bz-options');
+  optCont.innerHTML = '';
   q.o.forEach((opt,i)=>{
-    const d=document.createElement('div');
-    d.className='opt-row';
-    d.textContent=String.fromCharCode(65+i)+'.  '+opt;
-    optCont.appendChild(d);
+    const d = document.createElement('div'); d.className = 'opt-row';
+    d.textContent = String.fromCharCode(65+i)+'.  '+opt; optCont.appendChild(d);
   });
 
-  const buzzers=st.buzzers?Object.values(st.buzzers).sort((a,b)=>a.ts-b.ts):[];
-  const myEntry=buzzers.find(b=>b.name===myName);
-  const myRank =myEntry?buzzers.indexOf(myEntry)+1:null;
+  // ── RANK FIX: use server-sorted list, find this team's confirmed position ──
+  const buzzers  = getSortedBuzzers(st.buzzers);
+  const myEntry  = buzzers.find(b => b.name === myName);
+  // myRank is determined purely by position in server-sorted array
+  const myRank   = myEntry ? buzzers.indexOf(myEntry) + 1 : null;
 
-  const btn   =document.getElementById('buzzer-btn');
-  const lbl   =document.getElementById('buzzer-label');
-  const badge =document.getElementById('buzz-rank-badge');
-  const status=document.getElementById('bz-buzz-status');
-  badge.style.display='none'; btn.className='buzzer';
+  const btn    = document.getElementById('buzzer-btn');
+  const lbl    = document.getElementById('buzzer-label');
+  const badge  = document.getElementById('buzz-rank-badge');
+  const status = document.getElementById('bz-buzz-status');
+  badge.style.display = 'none';
+  btn.className = 'buzzer';
 
   if(st.timerExpired){
-    timerExpired=true; clearInterval(bzTimerInt);
+    timerExpired = true; clearInterval(bzTimerInt);
     if(!myEntry){
-      btn.className='buzzer locked'; lbl.textContent='TIME UP';
-      status.textContent='Timer ended — buzzer locked'; status.style.color='#475569';
+      btn.className = 'buzzer locked'; lbl.textContent = 'TIME UP';
+      status.textContent = 'Timer ended — buzzer locked'; status.style.color = '#475569';
     }
   }
 
   if(myEntry){
-    myBuzzed=true; btn.classList.add('buzzed'); lbl.textContent='BUZZED!';
-    badge.style.display='flex';
-    badge.style.background=RANK_COLORS[myRank-1]||RANK_COLORS[3];
-    badge.style.color=myRank===1?'#000':'#fff';
-    badge.textContent='#'+myRank;
-    const msgs=['⚡ First to buzz!','2nd to buzz','3rd to buzz','4th to buzz'];
-    status.textContent=msgs[myRank-1]||'#'+myRank+' to buzz';
-    status.style.color=RANK_COLORS[myRank-1]||RANK_COLORS[3];
+    // confirmed by server — show rank
+    myBuzzed = true;
+    btn.classList.add('buzzed'); lbl.textContent = 'BUZZED!';
+    badge.style.display = 'flex';
+    badge.style.background = RANK_COLORS[myRank-1] || RANK_COLORS[3];
+    badge.style.color = myRank===1 ? '#000' : '#fff';
+    badge.textContent = '#'+myRank;
+    const msgs = ['⚡ First to buzz!','2nd to buzz','3rd to buzz','4th to buzz'];
+    status.textContent = msgs[myRank-1] || '#'+myRank+' to buzz';
+    status.style.color = RANK_COLORS[myRank-1] || RANK_COLORS[3];
   } else if(!st.timerExpired){
-    myBuzzed=false; lbl.textContent='BUZZ!'; status.textContent='';
+    // not yet confirmed — keep button active
+    lbl.textContent = myBuzzed ? 'SENDING...' : 'BUZZ!';
+    status.textContent = '';
   }
 
-  if(bzTimerQIdx!==st.qIdx){
-    bzTimerQIdx=st.qIdx; timerExpired=false;
-    startBzTimer(q,st);
+  if(bzTimerQIdx !== st.qIdx){
+    bzTimerQIdx = st.qIdx; timerExpired = false; myBuzzed = false; lastBuzzCount = 0;
+    startBzTimer(q, st);
   }
 }
 
 function resetBuzzerBtn(){
-  const btn=document.getElementById('buzzer-btn');
-  btn.className='buzzer locked';
-  document.getElementById('buzzer-label').textContent='GET READY';
-  document.getElementById('buzz-rank-badge').style.display='none';
-  document.getElementById('bz-buzz-status').textContent='';
+  document.getElementById('buzzer-btn').className = 'buzzer locked';
+  document.getElementById('buzzer-label').textContent = 'GET READY';
+  document.getElementById('buzz-rank-badge').style.display = 'none';
+  document.getElementById('bz-buzz-status').textContent = '';
 }
 
-function startBzTimer(q,st){
+function startBzTimer(q, st){
   clearInterval(bzTimerInt);
-  const ring=document.getElementById('bz-timer-ring');
-  const txt =document.getElementById('bz-timer-text');
-  const circ=276.46;
-  const elapsed=st.startedAt?Math.max(0,Math.floor((Date.now()-st.startedAt)/1000)):0;
-  let left=Math.max(0,q.t-elapsed);
+  const ring = document.getElementById('bz-timer-ring');
+  const txt  = document.getElementById('bz-timer-text');
+  const circ = 276.46;
+  const elapsed = st.startedAt ? Math.max(0, Math.floor((Date.now()-st.startedAt)/1000)) : 0;
+  let left = Math.max(0, q.t - elapsed);
   function tick(){
-    txt.textContent=left;
-    ring.setAttribute('stroke-dashoffset',circ*(1-left/q.t));
-    if(left<=5){ring.setAttribute('stroke','#ef4444');txt.style.color='#ef4444';}
-    else{ring.setAttribute('stroke','#00E5FF');txt.style.color='#00E5FF';}
+    txt.textContent = left;
+    ring.setAttribute('stroke-dashoffset', circ*(1-left/q.t));
+    left<=5 ? (ring.setAttribute('stroke','#ef4444'), txt.style.color='#ef4444')
+            : (ring.setAttribute('stroke','#00E5FF'), txt.style.color='#00E5FF');
     if(left<=0){
-      clearInterval(bzTimerInt); timerExpired=true;
+      clearInterval(bzTimerInt); timerExpired = true;
       if(!myBuzzed){
-        document.getElementById('buzzer-btn').className='buzzer locked';
-        document.getElementById('buzzer-label').textContent='TIME UP';
-        document.getElementById('bz-buzz-status').textContent='Timer ended — buzzer locked';
-        document.getElementById('bz-buzz-status').style.color='#475569';
+        document.getElementById('buzzer-btn').className = 'buzzer locked';
+        document.getElementById('buzzer-label').textContent = 'TIME UP';
+        document.getElementById('bz-buzz-status').textContent = 'Timer ended — buzzer locked';
+        document.getElementById('bz-buzz-status').style.color = '#475569';
       }
       return;
     }
     left--;
   }
-  tick(); bzTimerInt=setInterval(tick,1000);
+  tick(); bzTimerInt = setInterval(tick, 1000);
 }
 
-window.pressBuzzer=function(){
-  if(myBuzzed||timerExpired) return;
-  const btn=document.getElementById('buzzer-btn');
+// ── PRESS BUZZER ─────────────────────────────────────
+// KEY FIX: use runTransaction so two simultaneous buzzes
+// don't overwrite each other — each write is atomic and
+// only succeeds if this team hasn't already buzzed.
+window.pressBuzzer = function(){
+  if(myBuzzed || timerExpired) return;
+  const btn = document.getElementById('buzzer-btn');
   if(btn.classList.contains('locked')) return;
-  myBuzzed=true;
-  const safeKey=myName.replace(/[.#$[\]]/g,'_');
-  update(ref(db,'quizState/buzzers'),{[safeKey]:{name:myName,ci:myCi,ts:Date.now()}});
+
+  // Optimistically show "SENDING..." to prevent double-tap
+  myBuzzed = true;
+  document.getElementById('buzzer-label').textContent = 'SENDING...';
+
+  const safeKey = myName.replace(/[.#$[\]]/g, '_');
+  const buzzerEntryRef = ref(db, `quizState/buzzers/${safeKey}`);
+
+  // Transaction: only write if this key doesn't already exist
+  runTransaction(buzzerEntryRef, current => {
+    if(current !== null) return; // already buzzed — abort
+    return { name: myName, ci: myCi, ts: Date.now() };
+  }).catch(() => {
+    // If transaction fails, reset so they can try again
+    myBuzzed = false;
+    document.getElementById('buzzer-label').textContent = 'BUZZ!';
+  });
 };
 
-// ═══════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // ADMIN
-// ═══════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 function renderAdminState(st){
-  const btnNext=document.getElementById('btn-next');
-  const btnPrev=document.getElementById('btn-prev');
-  const btnPause=document.getElementById('btn-pause');
+  document.getElementById('btn-next').disabled = (st.qIdx >= Q.length-1 && st.phase==='active');
+  document.getElementById('btn-prev').disabled = (st.qIdx <= 0);
 
-  btnNext.disabled=(st.qIdx>=Q.length-1 && st.phase==='active');
-  btnPrev.disabled=(st.qIdx<=0);
-
-  // pause button label
+  const btnPause = document.getElementById('btn-pause');
   if(st.paused){
-    btnPause.textContent='▶ RESUME';
-    btnPause.style.background='rgba(74,222,128,0.1)';
-    btnPause.style.borderColor='rgba(74,222,128,0.4)';
-    btnPause.style.color='#4ade80';
+    btnPause.textContent = '▶ RESUME';
+    btnPause.style.background   = 'rgba(74,222,128,0.1)';
+    btnPause.style.borderColor  = 'rgba(74,222,128,0.4)';
+    btnPause.style.color        = '#4ade80';
   } else {
-    btnPause.textContent='⏸ PAUSE';
-    btnPause.style.background='rgba(250,204,21,0.08)';
-    btnPause.style.borderColor='rgba(250,204,21,0.3)';
-    btnPause.style.color='#facc15';
+    btnPause.textContent = '⏸ PAUSE';
+    btnPause.style.background   = 'rgba(250,204,21,0.08)';
+    btnPause.style.borderColor  = 'rgba(250,204,21,0.3)';
+    btnPause.style.color        = '#facc15';
   }
 
-  document.getElementById('adm-progress').textContent=
-    st.qIdx<0?`0 / ${Q.length}`:`Q ${st.qIdx+1} / ${Q.length}`;
+  document.getElementById('adm-progress').textContent =
+    st.qIdx < 0 ? `0 / ${Q.length}` : `Q ${st.qIdx+1} / ${Q.length}`;
 
-  const waitBanner =document.getElementById('adm-waiting-banner');
-  const pauseBanner=document.getElementById('adm-paused-banner');
-  const qCard      =document.getElementById('adm-q-card');
+  const waitBanner  = document.getElementById('adm-waiting-banner');
+  const pauseBanner = document.getElementById('adm-paused-banner');
+  const qCard       = document.getElementById('adm-q-card');
 
-  if(st.phase==='idle'||st.qIdx<0){
-    waitBanner.style.display='block';
-    pauseBanner.style.display='none';
-    qCard.style.opacity='.35';
-    document.getElementById('adm-question').textContent='';
-    document.getElementById('adm-options').innerHTML='';
-    document.getElementById('adm-rpill').textContent='';
-    document.getElementById('adm-diff').textContent='';
-    document.getElementById('adm-timer-text').textContent='—';
-    renderAdminLeaderboard([]);
-    return;
+  if(st.phase==='idle' || st.qIdx < 0){
+    waitBanner.style.display = 'block'; pauseBanner.style.display = 'none'; qCard.style.opacity = '.35';
+    document.getElementById('adm-question').textContent = '';
+    document.getElementById('adm-options').innerHTML   = '';
+    document.getElementById('adm-rpill').textContent   = '';
+    document.getElementById('adm-diff').textContent    = '';
+    document.getElementById('adm-timer-text').textContent = '—';
+    renderAdminLeaderboard([]); return;
   }
 
-  waitBanner.style.display='none';
-  pauseBanner.style.display=st.paused?'block':'none';
-  qCard.style.opacity='1';
+  waitBanner.style.display  = 'none';
+  pauseBanner.style.display = st.paused ? 'block' : 'none';
+  qCard.style.opacity       = '1';
 
-  const q=Q[st.qIdx];
-  document.getElementById('adm-rpill').textContent=`Round ${q.r} — ${q.rn}`;
-  const diff=document.getElementById('adm-diff');
-  diff.textContent=q.d.toUpperCase(); diff.className='diff diff-'+q.d;
-  document.getElementById('adm-question').textContent=q.q;
+  const q = Q[st.qIdx];
+  document.getElementById('adm-rpill').textContent = `Round ${q.r} — ${q.rn}`;
+  const diff = document.getElementById('adm-diff');
+  diff.textContent = q.d.toUpperCase(); diff.className = 'diff diff-'+q.d;
+  document.getElementById('adm-question').textContent = q.q;
 
-  // options — NO highlight on any option
-  const optCont=document.getElementById('adm-options');
-  optCont.innerHTML='';
+  // Options — no highlight, large font
+  const optCont = document.getElementById('adm-options');
+  optCont.innerHTML = '';
   q.o.forEach((opt,i)=>{
-    const d=document.createElement('div');
-    d.className='adm-opt';
-    d.textContent=String.fromCharCode(65+i)+'. '+opt;
-    optCont.appendChild(d);
+    const d = document.createElement('div'); d.className = 'adm-opt';
+    d.textContent = String.fromCharCode(65+i)+'. '+opt; optCont.appendChild(d);
   });
 
-  const buzzers=st.buzzers?Object.values(st.buzzers).sort((a,b)=>a.ts-b.ts):[];
+  // Leaderboard — use same sorted helper
+  const buzzers = getSortedBuzzers(st.buzzers);
   renderAdminLeaderboard(buzzers);
 
-  if(admTimerQIdx!==st.qIdx){
-    admTimerQIdx=st.qIdx;
-    startAdmTimer(q,st);
-  }
+  if(admTimerQIdx !== st.qIdx){ admTimerQIdx = st.qIdx; startAdmTimer(q, st); }
 }
 
-function startAdmTimer(q,st){
+function startAdmTimer(q, st){
   clearInterval(admTimerInt);
-  const ring=document.getElementById('adm-timer-ring');
-  const txt =document.getElementById('adm-timer-text');
-  const circ=276.46;
-  const elapsed=st.startedAt?Math.max(0,Math.floor((Date.now()-st.startedAt)/1000)):0;
-  let left=Math.max(0,q.t-elapsed);
+  const ring = document.getElementById('adm-timer-ring');
+  const txt  = document.getElementById('adm-timer-text');
+  const circ = 276.46;
+  const elapsed = st.startedAt ? Math.max(0, Math.floor((Date.now()-st.startedAt)/1000)) : 0;
+  let left = Math.max(0, q.t - elapsed);
   function tick(){
-    txt.textContent=left;
-    ring.setAttribute('stroke-dashoffset',circ*(1-left/q.t));
-    if(left<=5){ring.setAttribute('stroke','#ef4444');txt.style.color='#ef4444';}
-    else{ring.setAttribute('stroke','#00E5FF');txt.style.color='#00E5FF';}
-    if(left<=0){
-      clearInterval(admTimerInt);
-      update(stateRef,{timerExpired:true});
-      return;
-    }
+    txt.textContent = left;
+    ring.setAttribute('stroke-dashoffset', circ*(1-left/q.t));
+    left<=5 ? (ring.setAttribute('stroke','#ef4444'), txt.style.color='#ef4444')
+            : (ring.setAttribute('stroke','#00E5FF'), txt.style.color='#00E5FF');
+    if(left<=0){ clearInterval(admTimerInt); update(stateRef,{timerExpired:true}); return; }
     left--;
   }
-  tick(); admTimerInt=setInterval(tick,1000);
+  tick(); admTimerInt = setInterval(tick, 1000);
 }
 
 function renderAdminLeaderboard(buzzers){
-  const list =document.getElementById('lb-list');
-  const empty=document.getElementById('lb-empty');
-  const count=document.getElementById('buzz-count');
-  count.textContent=(buzzers.length||0)+' buzzed';
-  if(!buzzers.length){list.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  list.innerHTML='';
+  const list  = document.getElementById('lb-list');
+  const empty = document.getElementById('lb-empty');
+  document.getElementById('buzz-count').textContent = (buzzers.length||0)+' buzzed';
+  if(!buzzers.length){ list.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none'; list.innerHTML = '';
   buzzers.forEach((b,i)=>{
-    const row=document.createElement('div');
-    row.className='lb-row '+(RANK_CLASS[i]||'');
-    row.innerHTML=`
+    const row = document.createElement('div');
+    row.className = 'lb-row '+(RANK_CLASS[i]||'');
+    row.innerHTML = `
       <div class="lb-num" style="background:${RANK_COLORS[i]}22;color:${RANK_COLORS[i]};border:1.5px solid ${RANK_COLORS[i]}40;">${RANK_LABELS[i]||i+1}</div>
       <div style="flex:1;">
         <div class="spaceg" style="font-weight:700;font-size:1.05rem;color:${TEAM_COLORS[b.ci]||'#fff'};">${b.name}</div>
         <div style="font-size:.72rem;color:#475569;margin-top:.1rem;">${COLOR_NAMES[b.ci]||''} team</div>
       </div>
-      ${i===0?'<span style="font-size:.78rem;color:#facc15;font-weight:600;">⚡ First</span>':''}
+      ${i===0 ? '<span style="font-size:.78rem;color:#facc15;font-weight:600;">⚡ First</span>' : ''}
     `;
     list.appendChild(row);
   });
 }
 
 // ── ADMIN CONTROLS ────────────────────────────────────
+window.resetBuzzers = function(){ update(stateRef, { buzzers:{}, timerExpired:false }); };
 
-window.resetBuzzers=function(){
-  update(stateRef,{buzzers:{},timerExpired:false});
+window.togglePause = async function(){
+  const snap = await get(stateRef); const st = snap.val()||makeState();
+  if(st.phase !== 'active') return;
+  update(stateRef, { paused: !st.paused });
 };
 
-window.togglePause=async function(){
-  const snap=await get(stateRef);
-  const st=snap.val()||makeState();
-  if(st.phase!=='active') return;
-  update(stateRef,{paused:!st.paused});
+window.adminNext = async function(){
+  clearInterval(admTimerInt); admTimerQIdx = -1;
+  const snap = await get(stateRef); const st = snap.val()||makeState();
+  const nextIdx = (typeof st.qIdx==='number' ? st.qIdx : -1) + 1;
+  if(nextIdx >= Q.length) return;
+  await set(stateRef, { phase:'active', qIdx:nextIdx, buzzers:{}, startedAt:Date.now(), timerExpired:false, paused:false });
 };
 
-window.adminNext=async function(){
-  clearInterval(admTimerInt); admTimerQIdx=-1;
-  const snap=await get(stateRef);
-  const st=snap.val()||makeState();
-  const nextIdx=(typeof st.qIdx==='number'?st.qIdx:-1)+1;
-  if(nextIdx>=Q.length) return;
-  await set(stateRef,{
-    phase:'active', qIdx:nextIdx,
-    buzzers:{}, startedAt:Date.now(),
-    timerExpired:false, paused:false
-  });
+window.adminPrev = async function(){
+  clearInterval(admTimerInt); admTimerQIdx = -1;
+  const snap = await get(stateRef); const st = snap.val()||makeState();
+  const prevIdx = (typeof st.qIdx==='number' ? st.qIdx : 0) - 1;
+  if(prevIdx < 0) return;
+  await set(stateRef, { phase:'active', qIdx:prevIdx, buzzers:{}, startedAt:Date.now(), timerExpired:false, paused:false });
 };
 
-window.adminPrev=async function(){
-  clearInterval(admTimerInt); admTimerQIdx=-1;
-  const snap=await get(stateRef);
-  const st=snap.val()||makeState();
-  const prevIdx=(typeof st.qIdx==='number'?st.qIdx:0)-1;
-  if(prevIdx<0) return;
-  await set(stateRef,{
-    phase:'active', qIdx:prevIdx,
-    buzzers:{}, startedAt:Date.now(),
-    timerExpired:false, paused:false
-  });
-};
-
-// ═══════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 // QUESTIONS (56)
-// ═══════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════
 const Q=[
 {r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What does HTTPS stand for and what makes it different from HTTP?",o:["HyperText Transfer Protocol Secure — encrypts data in transit using TLS","HyperText Transfer Protocol Speed — loads pages faster","Highly Trusted Protocol Secure — blocks viruses","HyperText Transfer Protocol System — verifies website owners"],c:0},
 {r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is a brute-force attack?",o:["Physically breaking into a server room","Systematically trying every possible password combination until the correct one is found","Tricking a user into revealing their password","Guessing based on personal info"],c:1},
@@ -659,7 +631,7 @@ const Q=[
 {r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"What is the two's complement of −5 in 8-bit binary?",o:["11111010","11111011","10000101","11110101"],c:1},
 {r:2,rn:"DECODE CHALLENGE",t:30,d:"hard",q:"In Base64 encoding, how many ASCII characters represent 3 bytes of binary data?",o:["3","4","6","8"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"You get an email from 'support@paypa1-help.net' saying your account will be suspended. What should you do?",o:["Click the link and verify immediately","Delete and report it as phishing","Forward it to friends as a warning","Reply asking if it is genuine"],c:1},
-{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"A user's webcam light turns on unexpectedly, the computer slows down, and files disappear. What is most likely?",o:["The computer needs an update","A Remote Access Trojan (RAT) is present","The hard drive is full","The graphics card is overheating"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"A user's webcam light turns on unexpectedly, the computer slows, and files disappear. What is most likely?",o:["The computer needs an update","A Remote Access Trojan (RAT) is present","The hard drive is full","The graphics card is overheating"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"You get a text: 'Your parcel is on hold. Pay £1.50 here: bit.ly/del99'. What attack is this?",o:["Vishing","Smishing (SMS phishing)","Spear phishing","Whaling"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"Someone calls claiming to be IT support and asks for your login credentials to fix an urgent issue. What attack is this?",o:["Phishing","Vishing (voice phishing)","Pretexting","Shoulder surfing"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"After clicking a link, a message says 'All your files are encrypted. Send 0.5 BTC to unlock.' What malware is this?",o:["Spyware","Adware","Ransomware","Browser hijacker"],c:2},
@@ -667,7 +639,7 @@ const Q=[
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"After installing free software, a user gets new toolbars, a changed homepage, and extra ads. What malware is present?",o:["Rootkit","Ransomware","Adware / Browser hijacker","Fileless malware"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A vendor's build server is compromised and malicious code is pushed in an update to 15,000 organisations. What attack is this?",o:["Zero-day exploit","Supply chain attack","Watering hole attack","Spear phishing campaign"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A SIEM shows 50,000 failed SSH attempts in 10 minutes, then one success with the password 'Summer2024!'. What attack succeeded?",o:["Credential stuffing","Dictionary attack","Pass-the-hash","SQL injection"],c:1},
-{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A CFO receives a voice message that sounds exactly like the CEO requesting an urgent £500,000 wire transfer. What technique is this?",o:["Traditional vishing","Business Email Compromise","AI deepfake voice phishing","Spear phishing via audio"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A CFO receives a voice message sounding exactly like the CEO, requesting an urgent £500,000 wire transfer. What technique is this?",o:["Traditional vishing","Business Email Compromise","AI deepfake voice phishing","Spear phishing via audio"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A user enters ' OR '1'='1 in a login field and gains access to all accounts. What vulnerability is exploited?",o:["Cross-site scripting","SQL injection","CSRF","Buffer overflow"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"Malware executes using PowerShell and WMI, writes no files to disk, and leaves no disk artifacts. What type is it?",o:["Rootkit","Ransomware","Fileless malware","Worm"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"An attacker registers 'microsofft.com' and 'gooogle.com' to catch users who mistype popular URLs. What technique is this?",o:["Domain fronting","Pharming","Typosquatting","IDN homograph attack"],c:2},
@@ -689,17 +661,14 @@ const Q=[
 ];
 
 function createParticles(){
-  const c=document.getElementById('particles');
-  if(!c)return;
+  const c = document.getElementById('particles'); if(!c) return;
   for(let i=0;i<24;i++){
-    const p=document.createElement('div');
-    const s=Math.random()*4+2;
+    const p=document.createElement('div'); const s=Math.random()*4+2;
     p.style.cssText=`position:absolute;width:${s}px;height:${s}px;background:#00E5FF;border-radius:50%;opacity:.14;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:floatUp ${Math.random()*20+15}s linear infinite;animation-delay:-${Math.random()*20}s`;
     c.appendChild(p);
   }
 }
-
-window.addEventListener('load',()=>{ createParticles(); pickColor(0); });
+window.addEventListener('load', ()=>{ createParticles(); pickColor(0); });
 </script>
 </body>
 </html>
