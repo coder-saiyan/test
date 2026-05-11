@@ -22,7 +22,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#e0f2fe;min-heigh
 .ghost-btn{background:transparent;border:none;color:#64748b;cursor:pointer;font-size:.9rem;font-family:'Inter',sans-serif;}
 .ghost-btn:hover{color:#94a3b8;}
 input[type=text],input[type=password]{background:rgba(15,25,45,0.9);border:1.5px solid #2d4060;border-radius:.75rem;color:#e0f2fe;font-size:1rem;padding:.7rem 1rem;width:100%;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
-input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
+input:focus{border-color:var(--neon);}
 .status-bar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;background:rgba(5,10,20,0.98);border-bottom:1px solid rgba(0,229,255,0.1);flex-shrink:0;flex-wrap:wrap;gap:.6rem;}
 .buzzer{width:180px;height:180px;border-radius:50%;border:5px solid var(--neon);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Archivo Black',sans-serif;font-size:1.5rem;color:#fff;background:rgba(0,229,255,0.07);transition:all .15s;user-select:none;position:relative;flex-shrink:0;}
 .buzzer:hover:not(.locked):not(.buzzed){background:rgba(0,229,255,0.16);transform:scale(1.04);}
@@ -31,7 +31,6 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
 .buzzer.locked{border-color:#1e293b;color:#334155;cursor:default;background:transparent;}
 .buzz-rank-badge{position:absolute;top:-8px;right:-8px;width:38px;height:38px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;font-family:'Space Grotesk',sans-serif;}
 .opt-row{background:rgba(20,30,50,0.9);border:1.5px solid #2d3f5a;border-radius:.9rem;padding:.9rem 1.1rem;font-size:1rem;color:#e0f2fe;line-height:1.4;}
-/* Admin options — large hall display */
 .adm-opt{padding:1.15rem 1.5rem;border-radius:.9rem;font-size:1.4rem;line-height:1.5;font-family:'Space Grotesk',sans-serif;font-weight:500;background:rgba(15,25,45,0.85);border:1.5px solid #1e3a5a;color:#94a3b8;}
 .lb-row{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;border-radius:.9rem;border:1px solid rgba(0,229,255,0.1);margin-bottom:.55rem;background:rgba(10,20,40,0.85);}
 .lb-row.r1{border-color:#facc15;background:rgba(250,204,21,0.07);}
@@ -110,10 +109,10 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
       <div>
         <label style="font-size:.78rem;color:#94a3b8;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.45rem;display:block;">Team Colour</label>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem;">
-          <button onclick="pickColor(0,this)" data-ci="0" style="height:38px;border-radius:.6rem;background:rgba(0,229,255,0.2);border:2px solid #00E5FF;cursor:pointer;"></button>
-          <button onclick="pickColor(1,this)" data-ci="1" style="height:38px;border-radius:.6rem;background:rgba(167,139,250,0.2);border:2px solid transparent;cursor:pointer;"></button>
-          <button onclick="pickColor(2,this)" data-ci="2" style="height:38px;border-radius:.6rem;background:rgba(251,146,60,0.2);border:2px solid transparent;cursor:pointer;"></button>
-          <button onclick="pickColor(3,this)" data-ci="3" style="height:38px;border-radius:.6rem;background:rgba(74,222,128,0.2);border:2px solid transparent;cursor:pointer;"></button>
+          <button onclick="pickColor(0)" data-ci="0" style="height:38px;border-radius:.6rem;background:rgba(0,229,255,0.2);border:2px solid #00E5FF;cursor:pointer;"></button>
+          <button onclick="pickColor(1)" data-ci="1" style="height:38px;border-radius:.6rem;background:rgba(167,139,250,0.2);border:2px solid transparent;cursor:pointer;"></button>
+          <button onclick="pickColor(2)" data-ci="2" style="height:38px;border-radius:.6rem;background:rgba(251,146,60,0.2);border:2px solid transparent;cursor:pointer;"></button>
+          <button onclick="pickColor(3)" data-ci="3" style="height:38px;border-radius:.6rem;background:rgba(74,222,128,0.2);border:2px solid transparent;cursor:pointer;"></button>
         </div>
       </div>
     </div>
@@ -122,7 +121,7 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
   </div>
 </section>
 
-<!-- TEAM BUZZER SCREEN -->
+<!-- TEAM BUZZER -->
 <section class="screen" id="s-buzzer">
   <div class="paused-overlay" id="paused-overlay">
     <div style="font-size:3rem;">⏸️</div>
@@ -203,20 +202,14 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
   </div>
 
   <div style="flex:1;display:grid;grid-template-columns:1fr 400px;gap:1.25rem;padding:1.25rem;max-width:1600px;width:100%;margin:0 auto;align-items:start;">
-
-    <!-- LEFT: question + options (large hall display) -->
     <div style="display:flex;flex-direction:column;gap:1rem;">
-
       <div id="adm-waiting-banner" style="background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.25);border-radius:1rem;padding:1.25rem 1.5rem;text-align:center;">
         <p class="spaceg" style="color:#facc15;font-size:1.1rem;font-weight:700;">Press NEXT QUESTION to begin</p>
         <p style="color:#64748b;font-size:.9rem;margin-top:.3rem;">Teams are waiting — start when ready</p>
       </div>
-
       <div id="adm-paused-banner" style="display:none;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.3);border-radius:1rem;padding:1rem 1.5rem;text-align:center;">
         <p class="spaceg" style="color:#facc15;font-weight:700;font-size:1rem;">⏸ Quiz is PAUSED — team screens are frozen</p>
       </div>
-
-      <!-- Question card — big text for hall projector -->
       <div id="adm-q-card" style="background:rgba(5,10,22,0.95);border:1px solid rgba(0,229,255,0.2);border-radius:1.5rem;padding:2.25rem 2.75rem;">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.75rem;flex-wrap:wrap;">
           <span id="adm-rpill" class="rpill" style="font-size:.82rem;padding:.4rem 1.1rem;"></span>
@@ -229,17 +222,13 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
             <span id="adm-timer-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:monospace;font-size:1.9rem;font-weight:700;color:#00E5FF;"></span>
           </div>
         </div>
-        <!-- HALL-SIZE QUESTION -->
         <h2 id="adm-question" class="archivo" style="font-size:clamp(1.8rem,3.2vw,2.8rem);line-height:1.38;color:#fff;"></h2>
       </div>
-
-      <!-- Options — hall size -->
       <div style="background:rgba(8,14,30,0.92);border:1px solid rgba(0,229,255,0.1);border-radius:1.35rem;padding:1.5rem 1.75rem;">
         <div id="adm-options" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;"></div>
       </div>
     </div>
 
-    <!-- RIGHT: leaderboard -->
     <div style="display:flex;flex-direction:column;gap:.85rem;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <h3 class="spaceg" style="font-size:1.1rem;color:#fff;font-weight:700;">Buzz Order</h3>
@@ -252,9 +241,10 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
 </section>
 
 <script type="module">
-import { initializeApp }                                      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, update, get,
-         runTransaction }                                     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { initializeApp }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, onValue, update, get, runTransaction }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 // ── FIREBASE ──────────────────────────────────────────
 const app = initializeApp({
@@ -264,7 +254,6 @@ const app = initializeApp({
 const db       = getDatabase(app);
 const stateRef = ref(db, 'quizState');
 
-// ── CONSTANTS ─────────────────────────────────────────
 const ADMIN_PW    = 'quiz2026';
 const TEAM_COLORS = ['#00E5FF','#a78bfa','#fb923c','#4ade80'];
 const COLOR_NAMES = ['Cyan','Purple','Orange','Green'];
@@ -272,335 +261,361 @@ const RANK_COLORS = ['#facc15','#94a3b8','#c2800a','#475569'];
 const RANK_LABELS = ['1st','2nd','3rd','4th'];
 const RANK_CLASS  = ['r1','r2','r3',''];
 
-// ── LOCAL ─────────────────────────────────────────────
 let myName='', myCi=0, myBuzzed=false, timerExpired=false;
 let bzTimerInt=null, admTimerInt=null, bzTimerQIdx=-1, admTimerQIdx=-1;
-// Track last buzz list length so team screen rank badge only appears after server confirms
-let lastBuzzCount = 0;
 
-// ── NAV ───────────────────────────────────────────────
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-window.goTo = goTo;
+window.goTo=goTo;
 
-// ── COLOUR PICKER ─────────────────────────────────────
-let selCi = 0;
-const CI_BORDERS = ['#00E5FF','#a78bfa','#fb923c','#4ade80'];
-window.pickColor = function(ci){
-  selCi = ci;
+let selCi=0;
+const CI_COLORS=['#00E5FF','#a78bfa','#fb923c','#4ade80'];
+window.pickColor=function(ci){
+  selCi=ci;
   document.querySelectorAll('#s-team-setup button[data-ci]').forEach(b=>{
-    b.style.borderColor = parseInt(b.dataset.ci)===ci ? CI_BORDERS[ci] : 'transparent';
+    b.style.borderColor=parseInt(b.dataset.ci)===ci?CI_COLORS[ci]:'transparent';
   });
 };
 
-// ── TEAM JOIN ─────────────────────────────────────────
-window.joinAsBuzzer = function(){
-  const n = document.getElementById('team-name-input').value.trim();
-  if(!n){ document.getElementById('team-name-input').focus(); return; }
-  myName = n; myCi = selCi; myBuzzed = false;
-  document.getElementById('bz-color-dot').style.background = TEAM_COLORS[myCi];
-  document.getElementById('bz-team-name').textContent = myName;
-  document.getElementById('bz-team-name').style.color  = TEAM_COLORS[myCi];
+window.joinAsBuzzer=function(){
+  const n=document.getElementById('team-name-input').value.trim();
+  if(!n){document.getElementById('team-name-input').focus();return;}
+  myName=n; myCi=selCi; myBuzzed=false;
+  document.getElementById('bz-color-dot').style.background=TEAM_COLORS[myCi];
+  document.getElementById('bz-team-name').textContent=myName;
+  document.getElementById('bz-team-name').style.color=TEAM_COLORS[myCi];
   goTo('s-buzzer');
-  onValue(stateRef, snap => renderBuzzerState(snap.val() || makeState()));
+  onValue(stateRef,snap=>renderBuzzerState(snap.val()||makeState()));
 };
 
-// ── ADMIN LOGIN ───────────────────────────────────────
-window.checkAdminPw = function(){
-  const v = document.getElementById('admin-pw-input').value;
-  if(v === ADMIN_PW){
-    document.getElementById('pw-error').textContent = '';
+window.checkAdminPw=function(){
+  const v=document.getElementById('admin-pw-input').value;
+  if(v===ADMIN_PW){
+    document.getElementById('pw-error').textContent='';
     goTo('s-admin');
-    onValue(stateRef, snap => renderAdminState(snap.val() || makeState()));
+    onValue(stateRef,snap=>renderAdminState(snap.val()||makeState()));
   } else {
-    document.getElementById('pw-error').textContent = 'Incorrect password.';
-    document.getElementById('admin-pw-input').value = '';
+    document.getElementById('pw-error').textContent='Incorrect password.';
+    document.getElementById('admin-pw-input').value='';
   }
 };
 
 function makeState(){
-  return { phase:'idle', qIdx:-1, buzzers:{}, startedAt:null, timerExpired:false, paused:false };
+  return {phase:'idle',qIdx:-1,buzzers:{},buzzerCounter:0,startedAt:null,timerExpired:false,paused:false};
 }
 
-// ═════════════════════════════════════════════════════
-// HELPER — get sorted buzzer array from Firebase object
-// KEY FIX: sort strictly by ts (timestamp) so order is
-// always insertion-time order, never key-alpha order.
-// ═════════════════════════════════════════════════════
-function getSortedBuzzers(buzzersObj){
-  if(!buzzersObj) return [];
-  return Object.values(buzzersObj).sort((a, b) => a.ts - b.ts);
+// ══════════════════════════════════════════════════════
+// THE RANK FIX — Atomic server-side counter
+//
+// Problem: Firebase stores buzzers as a JS object with
+// string keys. Object.values() order is not guaranteed,
+// and sorting by client timestamp fails when two devices
+// submit within the same ~500ms window — whichever write
+// Firebase processes last could have a slightly older ts
+// than a write processed first.
+//
+// Solution: A shared "buzzerCounter" integer in Firebase.
+// When a team presses BUZZ we run runTransaction() on it,
+// which atomically increments it and returns the new value
+// as that team's permanent "pos" (position). Firebase
+// serialises all transactions server-side, so:
+//   - Team A presses → gets pos 1 (forever)
+//   - Team B presses → gets pos 2 (forever)
+//   - Team C presses → gets pos 3 (forever)
+//
+// No matter what order the UI re-renders, getSortedBuzzers
+// sorts by pos (ascending), which NEVER changes after being
+// assigned. Your rank 2 is always rank 2.
+// ══════════════════════════════════════════════════════
+function getSortedBuzzers(obj){
+  if(!obj) return [];
+  // Sort by pos — the immutable atomic position number
+  return Object.values(obj).sort((a,b)=>a.pos - b.pos);
 }
 
-// ═════════════════════════════════════════════════════
-// TEAM BUZZER
-// ═════════════════════════════════════════════════════
+// ── TEAM BUZZER RENDER ────────────────────────────────
 function renderBuzzerState(st){
-  const overlay = document.getElementById('paused-overlay');
-  (st.paused && st.phase==='active') ? overlay.classList.add('show') : overlay.classList.remove('show');
+  const overlay=document.getElementById('paused-overlay');
+  (st.paused&&st.phase==='active')?overlay.classList.add('show'):overlay.classList.remove('show');
 
-  const waiting = document.getElementById('bz-waiting');
-  const active  = document.getElementById('bz-active');
+  const waiting=document.getElementById('bz-waiting');
+  const active =document.getElementById('bz-active');
 
-  if(st.phase==='idle' || st.qIdx < 0){
-    waiting.style.display = 'flex'; active.style.display = 'none';
-    clearInterval(bzTimerInt); bzTimerQIdx = -1; myBuzzed = false; timerExpired = false;
-    lastBuzzCount = 0;
+  if(st.phase==='idle'||st.qIdx<0){
+    waiting.style.display='flex'; active.style.display='none';
+    clearInterval(bzTimerInt); bzTimerQIdx=-1;
+    myBuzzed=false; timerExpired=false;
     resetBuzzerBtn(); return;
   }
 
-  waiting.style.display = 'none'; active.style.display = 'flex';
+  waiting.style.display='none'; active.style.display='flex';
 
-  const q = Q[st.qIdx];
-  document.getElementById('bz-q-counter').textContent = `Q ${st.qIdx+1} / ${Q.length}`;
-  document.getElementById('bz-rpill').textContent = `Round ${q.r} — ${q.rn}`;
-  const diff = document.getElementById('bz-diff');
-  diff.textContent = q.d.toUpperCase(); diff.className = 'diff diff-'+q.d;
-  document.getElementById('bz-question').textContent = q.q;
+  const q=Q[st.qIdx];
+  document.getElementById('bz-q-counter').textContent=`Q ${st.qIdx+1} / ${Q.length}`;
+  document.getElementById('bz-rpill').textContent=`Round ${q.r} — ${q.rn}`;
+  const diff=document.getElementById('bz-diff');
+  diff.textContent=q.d.toUpperCase(); diff.className='diff diff-'+q.d;
+  document.getElementById('bz-question').textContent=q.q;
 
-  const optCont = document.getElementById('bz-options');
-  optCont.innerHTML = '';
+  const optCont=document.getElementById('bz-options');
+  optCont.innerHTML='';
   q.o.forEach((opt,i)=>{
-    const d = document.createElement('div'); d.className = 'opt-row';
-    d.textContent = String.fromCharCode(65+i)+'.  '+opt; optCont.appendChild(d);
+    const d=document.createElement('div'); d.className='opt-row';
+    d.textContent=String.fromCharCode(65+i)+'.  '+opt; optCont.appendChild(d);
   });
 
-  // ── RANK FIX: use server-sorted list, find this team's confirmed position ──
-  const buzzers  = getSortedBuzzers(st.buzzers);
-  const myEntry  = buzzers.find(b => b.name === myName);
-  // myRank is determined purely by position in server-sorted array
-  const myRank   = myEntry ? buzzers.indexOf(myEntry) + 1 : null;
+  const buzzers=getSortedBuzzers(st.buzzers);
+  const myEntry=buzzers.find(b=>b.name===myName);
+  // pos is the immutable rank number written at buzz time
+  const myPos  =myEntry ? myEntry.pos : null;
 
-  const btn    = document.getElementById('buzzer-btn');
-  const lbl    = document.getElementById('buzzer-label');
-  const badge  = document.getElementById('buzz-rank-badge');
-  const status = document.getElementById('bz-buzz-status');
-  badge.style.display = 'none';
-  btn.className = 'buzzer';
+  const btn   =document.getElementById('buzzer-btn');
+  const lbl   =document.getElementById('buzzer-label');
+  const badge =document.getElementById('buzz-rank-badge');
+  const status=document.getElementById('bz-buzz-status');
+  badge.style.display='none';
+  btn.className='buzzer';
 
   if(st.timerExpired){
-    timerExpired = true; clearInterval(bzTimerInt);
+    timerExpired=true; clearInterval(bzTimerInt);
     if(!myEntry){
-      btn.className = 'buzzer locked'; lbl.textContent = 'TIME UP';
-      status.textContent = 'Timer ended — buzzer locked'; status.style.color = '#475569';
+      btn.className='buzzer locked'; lbl.textContent='TIME UP';
+      status.textContent='Timer ended — buzzer locked';
+      status.style.color='#475569';
     }
   }
 
   if(myEntry){
-    // confirmed by server — show rank
-    myBuzzed = true;
-    btn.classList.add('buzzed'); lbl.textContent = 'BUZZED!';
-    badge.style.display = 'flex';
-    badge.style.background = RANK_COLORS[myRank-1] || RANK_COLORS[3];
-    badge.style.color = myRank===1 ? '#000' : '#fff';
-    badge.textContent = '#'+myRank;
-    const msgs = ['⚡ First to buzz!','2nd to buzz','3rd to buzz','4th to buzz'];
-    status.textContent = msgs[myRank-1] || '#'+myRank+' to buzz';
-    status.style.color = RANK_COLORS[myRank-1] || RANK_COLORS[3];
+    myBuzzed=true; btn.classList.add('buzzed'); lbl.textContent='BUZZED!';
+    badge.style.display='flex';
+    const ri=myPos-1;
+    badge.style.background=RANK_COLORS[ri]||RANK_COLORS[3];
+    badge.style.color=myPos===1?'#000':'#fff';
+    badge.textContent='#'+myPos;
+    const msgs=['⚡ First to buzz!','2nd to buzz','3rd to buzz','4th to buzz'];
+    status.textContent=msgs[ri]||'#'+myPos+' to buzz';
+    status.style.color=RANK_COLORS[ri]||RANK_COLORS[3];
   } else if(!st.timerExpired){
-    // not yet confirmed — keep button active
-    lbl.textContent = myBuzzed ? 'SENDING...' : 'BUZZ!';
-    status.textContent = '';
+    lbl.textContent=myBuzzed?'SENDING...':'BUZZ!';
+    status.textContent='';
   }
 
-  if(bzTimerQIdx !== st.qIdx){
-    bzTimerQIdx = st.qIdx; timerExpired = false; myBuzzed = false; lastBuzzCount = 0;
-    startBzTimer(q, st);
+  if(bzTimerQIdx!==st.qIdx){
+    bzTimerQIdx=st.qIdx; timerExpired=false; myBuzzed=false;
+    startBzTimer(q,st);
   }
 }
 
 function resetBuzzerBtn(){
-  document.getElementById('buzzer-btn').className = 'buzzer locked';
-  document.getElementById('buzzer-label').textContent = 'GET READY';
-  document.getElementById('buzz-rank-badge').style.display = 'none';
-  document.getElementById('bz-buzz-status').textContent = '';
+  document.getElementById('buzzer-btn').className='buzzer locked';
+  document.getElementById('buzzer-label').textContent='GET READY';
+  document.getElementById('buzz-rank-badge').style.display='none';
+  document.getElementById('bz-buzz-status').textContent='';
 }
 
-function startBzTimer(q, st){
+function startBzTimer(q,st){
   clearInterval(bzTimerInt);
-  const ring = document.getElementById('bz-timer-ring');
-  const txt  = document.getElementById('bz-timer-text');
-  const circ = 276.46;
-  const elapsed = st.startedAt ? Math.max(0, Math.floor((Date.now()-st.startedAt)/1000)) : 0;
-  let left = Math.max(0, q.t - elapsed);
+  const ring=document.getElementById('bz-timer-ring');
+  const txt =document.getElementById('bz-timer-text');
+  const circ=276.46;
+  const elapsed=st.startedAt?Math.max(0,Math.floor((Date.now()-st.startedAt)/1000)):0;
+  let left=Math.max(0,q.t-elapsed);
   function tick(){
-    txt.textContent = left;
-    ring.setAttribute('stroke-dashoffset', circ*(1-left/q.t));
-    left<=5 ? (ring.setAttribute('stroke','#ef4444'), txt.style.color='#ef4444')
-            : (ring.setAttribute('stroke','#00E5FF'), txt.style.color='#00E5FF');
+    txt.textContent=left;
+    ring.setAttribute('stroke-dashoffset',circ*(1-left/q.t));
+    left<=5?(ring.setAttribute('stroke','#ef4444'),txt.style.color='#ef4444')
+           :(ring.setAttribute('stroke','#00E5FF'),txt.style.color='#00E5FF');
     if(left<=0){
-      clearInterval(bzTimerInt); timerExpired = true;
+      clearInterval(bzTimerInt); timerExpired=true;
       if(!myBuzzed){
-        document.getElementById('buzzer-btn').className = 'buzzer locked';
-        document.getElementById('buzzer-label').textContent = 'TIME UP';
-        document.getElementById('bz-buzz-status').textContent = 'Timer ended — buzzer locked';
-        document.getElementById('bz-buzz-status').style.color = '#475569';
+        document.getElementById('buzzer-btn').className='buzzer locked';
+        document.getElementById('buzzer-label').textContent='TIME UP';
+        document.getElementById('bz-buzz-status').textContent='Timer ended — buzzer locked';
+        document.getElementById('bz-buzz-status').style.color='#475569';
       }
       return;
     }
     left--;
   }
-  tick(); bzTimerInt = setInterval(tick, 1000);
+  tick(); bzTimerInt=setInterval(tick,1000);
 }
 
-// ── PRESS BUZZER ─────────────────────────────────────
-// KEY FIX: use runTransaction so two simultaneous buzzes
-// don't overwrite each other — each write is atomic and
-// only succeeds if this team hasn't already buzzed.
-window.pressBuzzer = function(){
-  if(myBuzzed || timerExpired) return;
-  const btn = document.getElementById('buzzer-btn');
+// ── PRESS BUZZER — atomic rank assignment ─────────────
+window.pressBuzzer=async function(){
+  if(myBuzzed||timerExpired) return;
+  const btn=document.getElementById('buzzer-btn');
   if(btn.classList.contains('locked')) return;
 
-  // Optimistically show "SENDING..." to prevent double-tap
-  myBuzzed = true;
-  document.getElementById('buzzer-label').textContent = 'SENDING...';
+  // Lock immediately to prevent double-press
+  myBuzzed=true;
+  document.getElementById('buzzer-label').textContent='SENDING...';
 
-  const safeKey = myName.replace(/[.#$[\]]/g, '_');
-  const buzzerEntryRef = ref(db, `quizState/buzzers/${safeKey}`);
+  const safeKey   =myName.replace(/[.#$[\]]/g,'_');
+  const counterRef=ref(db,'quizState/buzzerCounter');
+  const entryRef  =ref(db,`quizState/buzzers/${safeKey}`);
 
-  // Transaction: only write if this key doesn't already exist
-  runTransaction(buzzerEntryRef, current => {
-    if(current !== null) return; // already buzzed — abort
-    return { name: myName, ci: myCi, ts: Date.now() };
-  }).catch(() => {
-    // If transaction fails, reset so they can try again
-    myBuzzed = false;
-    document.getElementById('buzzer-label').textContent = 'BUZZ!';
-  });
+  try{
+    // Guard: abort if already written (race condition double-tap)
+    const existing=await get(entryRef);
+    if(existing.exists()) return;
+
+    // ATOMIC: increment counter, get this team's permanent rank
+    let assignedPos=null;
+    await runTransaction(counterRef, current=>{
+      assignedPos=(current||0)+1;
+      return assignedPos;
+      // Firebase will retry this function if another client
+      // modifies the counter at the same instant — guaranteed unique
+    });
+
+    // Write entry with the immutable pos
+    await set(entryRef,{
+      name:myName,
+      ci:  myCi,
+      pos: assignedPos,   // ← PERMANENT. Never changes. This IS the rank.
+      ts:  Date.now()
+    });
+
+  }catch(e){
+    // Network failure — let them retry
+    myBuzzed=false;
+    document.getElementById('buzzer-label').textContent='BUZZ!';
+  }
 };
 
-// ═════════════════════════════════════════════════════
-// ADMIN
-// ═════════════════════════════════════════════════════
+// ── ADMIN RENDER ──────────────────────────────────────
 function renderAdminState(st){
-  document.getElementById('btn-next').disabled = (st.qIdx >= Q.length-1 && st.phase==='active');
-  document.getElementById('btn-prev').disabled = (st.qIdx <= 0);
+  document.getElementById('btn-next').disabled=(st.qIdx>=Q.length-1&&st.phase==='active');
+  document.getElementById('btn-prev').disabled=(st.qIdx<=0);
 
-  const btnPause = document.getElementById('btn-pause');
+  const btnPause=document.getElementById('btn-pause');
   if(st.paused){
-    btnPause.textContent = '▶ RESUME';
-    btnPause.style.background   = 'rgba(74,222,128,0.1)';
-    btnPause.style.borderColor  = 'rgba(74,222,128,0.4)';
-    btnPause.style.color        = '#4ade80';
+    btnPause.textContent='▶ RESUME';
+    btnPause.style.background='rgba(74,222,128,0.1)';
+    btnPause.style.borderColor='rgba(74,222,128,0.4)';
+    btnPause.style.color='#4ade80';
   } else {
-    btnPause.textContent = '⏸ PAUSE';
-    btnPause.style.background   = 'rgba(250,204,21,0.08)';
-    btnPause.style.borderColor  = 'rgba(250,204,21,0.3)';
-    btnPause.style.color        = '#facc15';
+    btnPause.textContent='⏸ PAUSE';
+    btnPause.style.background='rgba(250,204,21,0.08)';
+    btnPause.style.borderColor='rgba(250,204,21,0.3)';
+    btnPause.style.color='#facc15';
   }
 
-  document.getElementById('adm-progress').textContent =
-    st.qIdx < 0 ? `0 / ${Q.length}` : `Q ${st.qIdx+1} / ${Q.length}`;
+  document.getElementById('adm-progress').textContent=
+    st.qIdx<0?`0 / ${Q.length}`:`Q ${st.qIdx+1} / ${Q.length}`;
 
-  const waitBanner  = document.getElementById('adm-waiting-banner');
-  const pauseBanner = document.getElementById('adm-paused-banner');
-  const qCard       = document.getElementById('adm-q-card');
+  const waitBanner =document.getElementById('adm-waiting-banner');
+  const pauseBanner=document.getElementById('adm-paused-banner');
+  const qCard      =document.getElementById('adm-q-card');
 
-  if(st.phase==='idle' || st.qIdx < 0){
-    waitBanner.style.display = 'block'; pauseBanner.style.display = 'none'; qCard.style.opacity = '.35';
-    document.getElementById('adm-question').textContent = '';
-    document.getElementById('adm-options').innerHTML   = '';
-    document.getElementById('adm-rpill').textContent   = '';
-    document.getElementById('adm-diff').textContent    = '';
-    document.getElementById('adm-timer-text').textContent = '—';
+  if(st.phase==='idle'||st.qIdx<0){
+    waitBanner.style.display='block'; pauseBanner.style.display='none'; qCard.style.opacity='.35';
+    document.getElementById('adm-question').textContent='';
+    document.getElementById('adm-options').innerHTML='';
+    document.getElementById('adm-rpill').textContent='';
+    document.getElementById('adm-diff').textContent='';
+    document.getElementById('adm-timer-text').textContent='—';
     renderAdminLeaderboard([]); return;
   }
 
-  waitBanner.style.display  = 'none';
-  pauseBanner.style.display = st.paused ? 'block' : 'none';
-  qCard.style.opacity       = '1';
+  waitBanner.style.display='none';
+  pauseBanner.style.display=st.paused?'block':'none';
+  qCard.style.opacity='1';
 
-  const q = Q[st.qIdx];
-  document.getElementById('adm-rpill').textContent = `Round ${q.r} — ${q.rn}`;
-  const diff = document.getElementById('adm-diff');
-  diff.textContent = q.d.toUpperCase(); diff.className = 'diff diff-'+q.d;
-  document.getElementById('adm-question').textContent = q.q;
+  const q=Q[st.qIdx];
+  document.getElementById('adm-rpill').textContent=`Round ${q.r} — ${q.rn}`;
+  const diff=document.getElementById('adm-diff');
+  diff.textContent=q.d.toUpperCase(); diff.className='diff diff-'+q.d;
+  document.getElementById('adm-question').textContent=q.q;
 
-  // Options — no highlight, large font
-  const optCont = document.getElementById('adm-options');
-  optCont.innerHTML = '';
+  const optCont=document.getElementById('adm-options');
+  optCont.innerHTML='';
   q.o.forEach((opt,i)=>{
-    const d = document.createElement('div'); d.className = 'adm-opt';
-    d.textContent = String.fromCharCode(65+i)+'. '+opt; optCont.appendChild(d);
+    const d=document.createElement('div'); d.className='adm-opt';
+    d.textContent=String.fromCharCode(65+i)+'. '+opt; optCont.appendChild(d);
   });
 
-  // Leaderboard — use same sorted helper
-  const buzzers = getSortedBuzzers(st.buzzers);
-  renderAdminLeaderboard(buzzers);
-
-  if(admTimerQIdx !== st.qIdx){ admTimerQIdx = st.qIdx; startAdmTimer(q, st); }
+  renderAdminLeaderboard(getSortedBuzzers(st.buzzers));
+  if(admTimerQIdx!==st.qIdx){ admTimerQIdx=st.qIdx; startAdmTimer(q,st); }
 }
 
-function startAdmTimer(q, st){
+function startAdmTimer(q,st){
   clearInterval(admTimerInt);
-  const ring = document.getElementById('adm-timer-ring');
-  const txt  = document.getElementById('adm-timer-text');
-  const circ = 276.46;
-  const elapsed = st.startedAt ? Math.max(0, Math.floor((Date.now()-st.startedAt)/1000)) : 0;
-  let left = Math.max(0, q.t - elapsed);
+  const ring=document.getElementById('adm-timer-ring');
+  const txt =document.getElementById('adm-timer-text');
+  const circ=276.46;
+  const elapsed=st.startedAt?Math.max(0,Math.floor((Date.now()-st.startedAt)/1000)):0;
+  let left=Math.max(0,q.t-elapsed);
   function tick(){
-    txt.textContent = left;
-    ring.setAttribute('stroke-dashoffset', circ*(1-left/q.t));
-    left<=5 ? (ring.setAttribute('stroke','#ef4444'), txt.style.color='#ef4444')
-            : (ring.setAttribute('stroke','#00E5FF'), txt.style.color='#00E5FF');
+    txt.textContent=left;
+    ring.setAttribute('stroke-dashoffset',circ*(1-left/q.t));
+    left<=5?(ring.setAttribute('stroke','#ef4444'),txt.style.color='#ef4444')
+           :(ring.setAttribute('stroke','#00E5FF'),txt.style.color='#00E5FF');
     if(left<=0){ clearInterval(admTimerInt); update(stateRef,{timerExpired:true}); return; }
     left--;
   }
-  tick(); admTimerInt = setInterval(tick, 1000);
+  tick(); admTimerInt=setInterval(tick,1000);
 }
 
 function renderAdminLeaderboard(buzzers){
-  const list  = document.getElementById('lb-list');
-  const empty = document.getElementById('lb-empty');
-  document.getElementById('buzz-count').textContent = (buzzers.length||0)+' buzzed';
+  const list =document.getElementById('lb-list');
+  const empty=document.getElementById('lb-empty');
+  document.getElementById('buzz-count').textContent=(buzzers.length||0)+' buzzed';
   if(!buzzers.length){ list.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display = 'none'; list.innerHTML = '';
+  empty.style.display='none'; list.innerHTML='';
   buzzers.forEach((b,i)=>{
-    const row = document.createElement('div');
-    row.className = 'lb-row '+(RANK_CLASS[i]||'');
-    row.innerHTML = `
+    const row=document.createElement('div');
+    row.className='lb-row '+(RANK_CLASS[i]||'');
+    row.innerHTML=`
       <div class="lb-num" style="background:${RANK_COLORS[i]}22;color:${RANK_COLORS[i]};border:1.5px solid ${RANK_COLORS[i]}40;">${RANK_LABELS[i]||i+1}</div>
       <div style="flex:1;">
         <div class="spaceg" style="font-weight:700;font-size:1.05rem;color:${TEAM_COLORS[b.ci]||'#fff'};">${b.name}</div>
         <div style="font-size:.72rem;color:#475569;margin-top:.1rem;">${COLOR_NAMES[b.ci]||''} team</div>
       </div>
-      ${i===0 ? '<span style="font-size:.78rem;color:#facc15;font-weight:600;">⚡ First</span>' : ''}
+      ${i===0?'<span style="font-size:.78rem;color:#facc15;font-weight:600;">⚡ First</span>':''}
     `;
     list.appendChild(row);
   });
 }
 
-// ── ADMIN CONTROLS ────────────────────────────────────
-window.resetBuzzers = function(){ update(stateRef, { buzzers:{}, timerExpired:false }); };
-
-window.togglePause = async function(){
-  const snap = await get(stateRef); const st = snap.val()||makeState();
-  if(st.phase !== 'active') return;
-  update(stateRef, { paused: !st.paused });
+window.resetBuzzers=function(){
+  // Reset counter to 0 so pos starts from 1 again next question
+  update(stateRef,{buzzers:{},buzzerCounter:0,timerExpired:false});
 };
 
-window.adminNext = async function(){
-  clearInterval(admTimerInt); admTimerQIdx = -1;
-  const snap = await get(stateRef); const st = snap.val()||makeState();
-  const nextIdx = (typeof st.qIdx==='number' ? st.qIdx : -1) + 1;
-  if(nextIdx >= Q.length) return;
-  await set(stateRef, { phase:'active', qIdx:nextIdx, buzzers:{}, startedAt:Date.now(), timerExpired:false, paused:false });
+window.togglePause=async function(){
+  const snap=await get(stateRef); const st=snap.val()||makeState();
+  if(st.phase!=='active') return;
+  update(stateRef,{paused:!st.paused});
 };
 
-window.adminPrev = async function(){
-  clearInterval(admTimerInt); admTimerQIdx = -1;
-  const snap = await get(stateRef); const st = snap.val()||makeState();
-  const prevIdx = (typeof st.qIdx==='number' ? st.qIdx : 0) - 1;
-  if(prevIdx < 0) return;
-  await set(stateRef, { phase:'active', qIdx:prevIdx, buzzers:{}, startedAt:Date.now(), timerExpired:false, paused:false });
+window.adminNext=async function(){
+  clearInterval(admTimerInt); admTimerQIdx=-1;
+  const snap=await get(stateRef); const st=snap.val()||makeState();
+  const nextIdx=(typeof st.qIdx==='number'?st.qIdx:-1)+1;
+  if(nextIdx>=Q.length) return;
+  await set(stateRef,{
+    phase:'active',qIdx:nextIdx,
+    buzzers:{},buzzerCounter:0,
+    startedAt:Date.now(),timerExpired:false,paused:false
+  });
 };
 
-// ═════════════════════════════════════════════════════
-// QUESTIONS (56)
-// ═════════════════════════════════════════════════════
+window.adminPrev=async function(){
+  clearInterval(admTimerInt); admTimerQIdx=-1;
+  const snap=await get(stateRef); const st=snap.val()||makeState();
+  const prevIdx=(typeof st.qIdx==='number'?st.qIdx:0)-1;
+  if(prevIdx<0) return;
+  await set(stateRef,{
+    phase:'active',qIdx:prevIdx,
+    buzzers:{},buzzerCounter:0,
+    startedAt:Date.now(),timerExpired:false,paused:false
+  });
+};
+
+// ── QUESTIONS (56) ────────────────────────────────────
 const Q=[
 {r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What does HTTPS stand for and what makes it different from HTTP?",o:["HyperText Transfer Protocol Secure — encrypts data in transit using TLS","HyperText Transfer Protocol Speed — loads pages faster","Highly Trusted Protocol Secure — blocks viruses","HyperText Transfer Protocol System — verifies website owners"],c:0},
 {r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is a brute-force attack?",o:["Physically breaking into a server room","Systematically trying every possible password combination until the correct one is found","Tricking a user into revealing their password","Guessing based on personal info"],c:1},
@@ -609,7 +624,7 @@ const Q=[
 {r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"Which of these is an example of multi-factor authentication (MFA)?",o:["Using two different passwords","Entering a password and a fingerprint scan","Answering two security questions","Using the same password on two devices"],c:1},
 {r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is a VPN primarily used for?",o:["Speeding up your internet connection","Encrypting your traffic and masking your IP address","Storing files securely in the cloud","Blocking pop-up advertisements"],c:1},
 {r:1,rn:"CYBER MASTERY",t:25,d:"normal",q:"What is the CIA Triad in information security?",o:["Confidentiality, Integrity, Availability","Cryptography, Identity, Authentication","Control, Inspect, Audit","Confidentiality, Intelligence, Access"],c:0},
-{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What type of attack exploits trusted relationships between systems — compromising a software vendor to attack all its customers simultaneously?",o:["Zero-day exploit","Supply chain attack","Watering hole attack","Privilege escalation"],c:1},
+{r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What type of attack exploits trusted relationships — compromising a software vendor to attack all its customers simultaneously?",o:["Zero-day exploit","Supply chain attack","Watering hole attack","Privilege escalation"],c:1},
 {r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What is the key difference between symmetric and asymmetric encryption?",o:["Symmetric is slower; asymmetric is faster","Symmetric uses one shared key; asymmetric uses a public-private key pair","Symmetric is only for files; asymmetric only for email","Symmetric uses hardware; asymmetric uses software"],c:1},
 {r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"Which security principle ensures a user cannot later deny having performed an action?",o:["Confidentiality","Integrity","Non-repudiation","Availability"],c:2},
 {r:1,rn:"CYBER MASTERY",t:25,d:"hard",q:"What is the purpose of a SALT when storing passwords in a database?",o:["To encrypt the password before hashing","To add a unique random value to each password before hashing, defeating rainbow table attacks","To double the length of the password","To speed up login verification"],c:1},
@@ -633,17 +648,17 @@ const Q=[
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"You get an email from 'support@paypa1-help.net' saying your account will be suspended. What should you do?",o:["Click the link and verify immediately","Delete and report it as phishing","Forward it to friends as a warning","Reply asking if it is genuine"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"A user's webcam light turns on unexpectedly, the computer slows, and files disappear. What is most likely?",o:["The computer needs an update","A Remote Access Trojan (RAT) is present","The hard drive is full","The graphics card is overheating"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"You get a text: 'Your parcel is on hold. Pay £1.50 here: bit.ly/del99'. What attack is this?",o:["Vishing","Smishing (SMS phishing)","Spear phishing","Whaling"],c:1},
-{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"Someone calls claiming to be IT support and asks for your login credentials to fix an urgent issue. What attack is this?",o:["Phishing","Vishing (voice phishing)","Pretexting","Shoulder surfing"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"Someone calls claiming to be IT support and asks for your login credentials. What attack is this?",o:["Phishing","Vishing (voice phishing)","Pretexting","Shoulder surfing"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"After clicking a link, a message says 'All your files are encrypted. Send 0.5 BTC to unlock.' What malware is this?",o:["Spyware","Adware","Ransomware","Browser hijacker"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"A website is flooded with millions of requests from thousands of IPs, making it unavailable. What attack is this?",o:["SQL injection","Cross-site scripting","DDoS (Distributed Denial of Service)","Man-in-the-Middle attack"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"normal",q:"After installing free software, a user gets new toolbars, a changed homepage, and extra ads. What malware is present?",o:["Rootkit","Ransomware","Adware / Browser hijacker","Fileless malware"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A vendor's build server is compromised and malicious code is pushed in an update to 15,000 organisations. What attack is this?",o:["Zero-day exploit","Supply chain attack","Watering hole attack","Spear phishing campaign"],c:1},
-{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A SIEM shows 50,000 failed SSH attempts in 10 minutes, then one success with the password 'Summer2024!'. What attack succeeded?",o:["Credential stuffing","Dictionary attack","Pass-the-hash","SQL injection"],c:1},
-{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A CFO receives a voice message sounding exactly like the CEO, requesting an urgent £500,000 wire transfer. What technique is this?",o:["Traditional vishing","Business Email Compromise","AI deepfake voice phishing","Spear phishing via audio"],c:2},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A SIEM shows 50,000 failed SSH attempts then one success with password 'Summer2024!'. What attack succeeded?",o:["Credential stuffing","Dictionary attack","Pass-the-hash","SQL injection"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A CFO receives a voice message sounding exactly like the CEO requesting an urgent £500,000 wire transfer. What technique is this?",o:["Traditional vishing","Business Email Compromise","AI deepfake voice phishing","Spear phishing via audio"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"A user enters ' OR '1'='1 in a login field and gains access to all accounts. What vulnerability is exploited?",o:["Cross-site scripting","SQL injection","CSRF","Buffer overflow"],c:1},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"Malware executes using PowerShell and WMI, writes no files to disk, and leaves no disk artifacts. What type is it?",o:["Rootkit","Ransomware","Fileless malware","Worm"],c:2},
 {r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"An attacker registers 'microsofft.com' and 'gooogle.com' to catch users who mistype popular URLs. What technique is this?",o:["Domain fronting","Pharming","Typosquatting","IDN homograph attack"],c:2},
-{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"Attackers lived inside a company's network for 11 months quietly exfiltrating data without triggering alerts. What best describes this?",o:["Opportunistic cybercrime","Advanced Persistent Threat (APT)","Script kiddie attack","Insider threat"],c:1},
+{r:3,rn:"THREAT DETECTIVE",t:20,d:"hard",q:"Attackers lived inside a company network for 11 months quietly exfiltrating data without triggering alerts. What best describes this?",o:["Opportunistic cybercrime","Advanced Persistent Threat (APT)","Script kiddie attack","Insider threat"],c:1},
 {r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"What port does HTTPS use by default?",o:["80","443","8080","21"],c:1},
 {r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"What does 'SQL' stand for?",o:["Structured Query Language","Secure Query Layer","System Query Logic","Sequential Queue Language"],c:0},
 {r:4,rn:"CYBER BUZZER",t:10,d:"normal",q:"Which protocol does the 'ping' command use?",o:["TCP","UDP","ICMP","ARP"],c:2},
@@ -661,14 +676,14 @@ const Q=[
 ];
 
 function createParticles(){
-  const c = document.getElementById('particles'); if(!c) return;
+  const c=document.getElementById('particles'); if(!c) return;
   for(let i=0;i<24;i++){
     const p=document.createElement('div'); const s=Math.random()*4+2;
     p.style.cssText=`position:absolute;width:${s}px;height:${s}px;background:#00E5FF;border-radius:50%;opacity:.14;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:floatUp ${Math.random()*20+15}s linear infinite;animation-delay:-${Math.random()*20}s`;
     c.appendChild(p);
   }
 }
-window.addEventListener('load', ()=>{ createParticles(); pickColor(0); });
+window.addEventListener('load',()=>{ createParticles(); pickColor(0); });
 </script>
 </body>
 </html>
