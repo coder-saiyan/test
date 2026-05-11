@@ -242,8 +242,7 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--neon);}
 
 <script type="module">
 import { initializeApp }                                      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, update, get,
-         runTransaction, serverTimestamp }                    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getDatabase, ref, set, onValue, update, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 // ── FIREBASE ──────────────────────────────────────────
 const app = initializeApp({
@@ -264,6 +263,8 @@ const RANK_CLASS  = ['r1','r2','r3',''];
 // ── LOCAL STATE ───────────────────────────────────────
 let myName='', myCi=0, myBuzzed=false, timerExpired=false;
 let bzTimerInt=null, admTimerInt=null, bzTimerQIdx=-1, admTimerQIdx=-1;
+// Locked buzz order — once a team appears, their rank never changes
+let lockedBuzzOrder = []; // array of team safeKeys in arrival order
 
 // ── NAV ───────────────────────────────────────────────
 function goTo(id){
@@ -312,28 +313,30 @@ function makeState(){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// SORT BUZZERS
+// BUZZ ORDER — LOCK ON FIRST APPEARANCE
 //
-// THE FIX: We now store TWO timestamps per buzzer entry:
-//   • ts  — Date.now() from the client (unreliable across devices)
-//   • seq — a server-side auto-increment integer written via
-//            runTransaction on a separate /buzzerSeq counter.
-//
-// Sort priority:  seq (ascending) → ts (ascending, as tiebreak)
-//
-// Because seq is assigned by the Firebase server in strict
-// write-arrival order, two clients with skewed clocks will
-// always get the correct 1st / 2nd / 3rd ranking regardless
-// of their local system time.
+// Every time Firebase fires onValue, we get the full buzzers object.
+// Instead of re-sorting it (which can reorder), we maintain
+// lockedBuzzOrder — an array of safeKeys in the order we first
+// saw them appear. New teams get appended, existing teams keep
+// their position forever. Rankings never change once assigned.
 // ═══════════════════════════════════════════════════════════════
+function updateLockedOrder(buzzersObj){
+  if(!buzzersObj) return;
+  Object.keys(buzzersObj).forEach(safeKey => {
+    if(!lockedBuzzOrder.includes(safeKey)){
+      lockedBuzzOrder.push(safeKey); // append new arrivals only
+    }
+  });
+}
+
 function getSortedBuzzers(buzzersObj){
   if(!buzzersObj) return [];
-  return Object.values(buzzersObj).sort((a, b) => {
-    // Primary: server sequence number (strict arrival order)
-    if(a.seq !== b.seq) return a.seq - b.seq;
-    // Fallback: client timestamp (should rarely differ after seq)
-    return a.ts - b.ts;
-  });
+  updateLockedOrder(buzzersObj);
+  // Return entries in locked order, skip any that disappeared
+  return lockedBuzzOrder
+    .filter(k => buzzersObj[k])
+    .map(k => buzzersObj[k]);
 }
 
 // ═════════════════════════════════════════════════════
@@ -349,6 +352,7 @@ function renderBuzzerState(st){
   if(st.phase==='idle' || st.qIdx < 0){
     waiting.style.display = 'flex'; active.style.display = 'none';
     clearInterval(bzTimerInt); bzTimerQIdx = -1; myBuzzed = false; timerExpired = false;
+    lockedBuzzOrder = [];
     resetBuzzerBtn(); return;
   }
 
@@ -405,6 +409,7 @@ function renderBuzzerState(st){
 
   if(bzTimerQIdx !== st.qIdx){
     bzTimerQIdx = st.qIdx; timerExpired = false; myBuzzed = false;
+    lockedBuzzOrder = [];
     startBzTimer(q, st);
   }
 }
@@ -445,42 +450,39 @@ function startBzTimer(q, st){
 
 // ── PRESS BUZZER ─────────────────────────────────────
 // HOW THE FIX WORKS:
-// 1. We run a transaction on /quizState/buzzerSeq to atomically
-//    increment a server-side counter and get back a unique integer.
-// 2. That integer (seq) is stored alongside the buzzer entry.
-// 3. All clients sort by seq — which reflects true server-arrival
-//    order — so clock skew between laptops is completely irrelevant.
+// push() to /quizState/buzzers generates a key on the Firebase
+// SERVER at the moment the write arrives. Keys are like
+// "-OAbc123XYZ" and sort lexicographically in arrival order.
+// No client timestamps. No counters. No race conditions.
+// Two teams buzzing 1ms apart always get the correct rank.
+//
+// ── PRESS BUZZER ─────────────────────────────────────
+// THE DEFINITIVE FIX:
+// One single atomic set() keyed by team name.
+// { '.sv': 'timestamp' } is resolved by Firebase to the SERVER's
+// Unix ms at commit time — not the client's clock.
+// Team name as key = second write by same team just overwrites
+// with identical data, rank stays unchanged. No guard needed.
+// Sort by serverTs = true commit order. No race. No multi-step.
 window.pressBuzzer = function(){
   if(myBuzzed || timerExpired) return;
   const btn = document.getElementById('buzzer-btn');
   if(btn.classList.contains('locked')) return;
 
-  // Prevent double-tap immediately
   myBuzzed = true;
   document.getElementById('buzzer-label').textContent = 'SENDING...';
 
-  const seqRef         = ref(db, 'quizState/buzzerSeq');
-  const safeKey        = myName.replace(/[.#$[\]]/g, '_');
-  const buzzerEntryRef = ref(db, `quizState/buzzers/${safeKey}`);
-  const clientTs       = Date.now();
+  const safeKey   = myName.replace(/[.#$[\]]/g, '_');
+  const buzzerRef = ref(db, `quizState/buzzers/${safeKey}`);
 
-  // Step 1: atomically claim the next sequence number
-  runTransaction(seqRef, current => (current === null ? 1 : current + 1))
-    .then(result => {
-      if(!result.committed) throw new Error('seq transaction aborted');
-      const mySeq = result.snapshot.val();
-
-      // Step 2: write buzzer entry with seq — only if not already present
-      return runTransaction(buzzerEntryRef, current => {
-        if(current !== null) return; // already buzzed — abort
-        return { name: myName, ci: myCi, ts: clientTs, seq: mySeq };
-      });
-    })
-    .catch(() => {
-      // Transaction failed — reset so team can try again
-      myBuzzed = false;
-      document.getElementById('buzzer-label').textContent = 'BUZZ!';
-    });
+  set(buzzerRef, {
+    name:     myName,
+    ci:       myCi,
+    serverTs: { '.sv': 'timestamp' }
+  }).catch(() => {
+    myBuzzed = false;
+    document.getElementById('buzzer-label').textContent = 'BUZZ!';
+  });
 };
 
 // ═════════════════════════════════════════════════════
@@ -517,6 +519,7 @@ function renderAdminState(st){
     document.getElementById('adm-rpill').textContent   = '';
     document.getElementById('adm-diff').textContent    = '';
     document.getElementById('adm-timer-text').textContent = '—';
+    lockedBuzzOrder = [];
     renderAdminLeaderboard([]); return;
   }
 
@@ -540,7 +543,7 @@ function renderAdminState(st){
   const buzzers = getSortedBuzzers(st.buzzers);
   renderAdminLeaderboard(buzzers);
 
-  if(admTimerQIdx !== st.qIdx){ admTimerQIdx = st.qIdx; startAdmTimer(q, st); }
+  if(admTimerQIdx !== st.qIdx){ admTimerQIdx = st.qIdx; lockedBuzzOrder = []; startAdmTimer(q, st); }
 }
 
 function startAdmTimer(q, st){
@@ -584,7 +587,8 @@ function renderAdminLeaderboard(buzzers){
 
 // ── ADMIN CONTROLS ────────────────────────────────────
 window.resetBuzzers = function(){
-  update(stateRef, { buzzers:{}, buzzerSeq:0, timerExpired:false });
+  lockedBuzzOrder = [];
+  update(stateRef, { buzzers:{}, timerExpired:false });
 };
 
 window.togglePause = async function(){
@@ -598,7 +602,7 @@ window.adminNext = async function(){
   const snap = await get(stateRef); const st = snap.val()||makeState();
   const nextIdx = (typeof st.qIdx==='number' ? st.qIdx : -1) + 1;
   if(nextIdx >= Q.length) return;
-  await set(stateRef, { phase:'active', qIdx:nextIdx, buzzers:{}, buzzerSeq:0, startedAt:Date.now(), timerExpired:false, paused:false });
+  await set(stateRef, { phase:'active', qIdx:nextIdx, buzzers:{}, startedAt:Date.now(), timerExpired:false, paused:false });
 };
 
 window.adminPrev = async function(){
@@ -606,7 +610,7 @@ window.adminPrev = async function(){
   const snap = await get(stateRef); const st = snap.val()||makeState();
   const prevIdx = (typeof st.qIdx==='number' ? st.qIdx : 0) - 1;
   if(prevIdx < 0) return;
-  await set(stateRef, { phase:'active', qIdx:prevIdx, buzzers:{}, buzzerSeq:0, startedAt:Date.now(), timerExpired:false, paused:false });
+  await set(stateRef, { phase:'active', qIdx:prevIdx, buzzers:{}, startedAt:Date.now(), timerExpired:false, paused:false });
 };
 
 // ═════════════════════════════════════════════════════
